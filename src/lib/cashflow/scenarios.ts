@@ -90,7 +90,7 @@ export function satuPasarProjects(): Project[] {
         "Bu Sari — Bandung Timur",
         880_000_000,
         0.95,
-        "Rumah 2 lantai. DP 18%, bayar per tahap, upah mingguan.",
+        "Rumah tinggal 2 lantai.",
       ),
       house(
         "andi",
@@ -98,7 +98,7 @@ export function satuPasarProjects(): Project[] {
         "Pak Andi — Cimahi",
         720_000_000,
         0.78,
-        "Type 70. Pembayaran bertahap; finishing sering ditahan owner.",
+        "Rumah type 70.",
       ),
       house(
         "lina",
@@ -106,7 +106,7 @@ export function satuPasarProjects(): Project[] {
         "Bu Lina — Buahbatu",
         510_000_000,
         0.55,
-        "Renovasi total. Material di depan, sisa bayar di akhir.",
+        "Renovasi total.",
       ),
     ],
     "bersamaan",
@@ -123,7 +123,7 @@ export function berbagaiPasarProjects(): Project[] {
     workShape: "normal",
     startWeek: 7,
     enabled: true,
-    notes: "Paket pemda. UM 20% setelah jaminan. Termyn menunggu SP2D; sering tertahan di akhir tahun.",
+    notes: "Paket drainase kelurahan.",
     costMix: { ...DEFAULT_COST_MIX },
     payPolicy: { ...DEFAULT_PAY_POLICY },
     terms: { ...TERMS_PEMDA },
@@ -149,7 +149,7 @@ export function berbagaiPasarProjects(): Project[] {
     "Bu Sari — Bandung Timur",
     880_000_000,
     0.95,
-    "Kontrak rumah tinggal, berdampingan dengan paket pemda dan subkon.",
+    "Rumah tinggal 2 lantai.",
   );
   rumah.id = "sari-mix";
 
@@ -162,7 +162,7 @@ export function berbagaiPasarProjects(): Project[] {
     workShape: "back",
     startWeek: 7,
     enabled: true,
-    notes: "Pay-when-paid. Tidak ada UM, retensi 10%, lag pencairan 6 minggu.",
+    notes: "Finishing ruko 3 pintu.",
     costMix: { labor: 0.42, material: 0.46, equipment: 0.12 },
     payPolicy: { ...DEFAULT_PAY_POLICY, laborDelayWeeks: 0, materialDelayWeeks: 2 },
     terms: { ...TERMS_SUBKON },

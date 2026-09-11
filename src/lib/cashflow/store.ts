@@ -58,7 +58,10 @@ function hydrateProject(p: Project): Project {
 
 function hydrateList(list: Project[] | undefined, fallback: Project[]): Project[] {
   if (!Array.isArray(list) || !list[0]?.rab?.length) return fallback;
-  return list.map(hydrateProject);
+  const notesById = Object.fromEntries(fallback.map((p) => [p.id, p.notes]));
+  return list.map((p) =>
+    hydrateProject({ ...p, notes: notesById[p.id] ?? p.notes }),
+  );
 }
 
 const emptyJournal = (): Journal => ({

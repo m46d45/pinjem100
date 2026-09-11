@@ -200,9 +200,9 @@ export const MARKET_LABEL: Record<Market, string> = {
 };
 
 export const MARKET_BLURB: Record<Market, string> = {
-  pemda: "Uang muka ada. Termyn cair setelah SP2D. Sering tertahan di pergantian tahun anggaran.",
-  rumah: "DP lalu bayar per tahap. Upah mingguan. Sisa sering tertahan di finishing.",
-  subkon: "Pay-when-paid. Upah tetap keluar; tagihan menunggu maincon.",
+  pemda: "Owner: pemerintah daerah.",
+  rumah: "Owner: pemilik rumah.",
+  subkon: "Owner: kontraktor utama.",
 };
 
 export const PRESET_LABEL: Record<StartPreset, string> = {
