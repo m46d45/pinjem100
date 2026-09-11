@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { BookOpen, ClipboardList, Layers, LineChart, ScrollText } from "lucide-react";
 import { type ReactNode, useEffect, useState } from "react";
+import { LogoMark } from "@/components/layout/logo-mark";
 import { cn } from "@/lib/utils";
 
 const NAV = [
@@ -30,8 +31,9 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="flex min-h-dvh flex-col">
       <header className="sticky top-0 z-30 border-b border-border/80 bg-background/90 backdrop-blur-sm">
         <div className="mx-auto flex min-h-14 max-w-6xl items-center justify-between gap-3 px-4">
-          <Link to="/" className="text-xl font-semibold tracking-tight text-primary">
-            Pinjem100
+          <Link to="/" className="flex items-center gap-2">
+            <LogoMark className="size-7" />
+            <span className="text-xl font-semibold tracking-tight text-primary">Pinjem100</span>
           </Link>
           <div className="flex items-center gap-2">
             {offline ? (
