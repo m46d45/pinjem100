@@ -93,9 +93,9 @@ function PanduanPage() {
       </Card>
 
       <p className="text-xs text-muted-foreground">
-        Rekap pengunjung:{" "}
+        Untuk pengampu:{" "}
         <Link to="/rekap" className="text-primary">
-          Rekap
+          Rekap pemakaian
         </Link>
       </p>
     </div>

@@ -2,6 +2,11 @@ import { createServerFn } from "@tanstack/react-start";
 
 const KINDS = new Set(["view", "sim"]);
 
+function hasDatabase() {
+  const url = typeof process !== "undefined" ? process.env.DATABASE_URL : undefined;
+  return Boolean(url && url.trim());
+}
+
 export const recordLabEvent = createServerFn({ method: "POST" })
   .validator((input: unknown) => {
     const d = (input ?? {}) as Record<string, unknown>;
@@ -16,6 +21,7 @@ export const recordLabEvent = createServerFn({ method: "POST" })
     };
   })
   .handler(async ({ data }) => {
+    if (!hasDatabase()) return { ok: false as const };
     const { getSql } = await import("@/lib/db");
     const sql = await getSql();
     await sql`
@@ -34,12 +40,14 @@ export type LabStats = {
 };
 
 export const getLabStats = createServerFn({ method: "GET" }).handler(async () => {
+  const empty: LabStats = { views: 0, sims: 0, hijau: 0, kuning: 0, merah: 0 };
+  if (!hasDatabase()) return empty;
   const { getSql } = await import("@/lib/db");
   const sql = await getSql();
   const rows = await sql<{ kind: string; zone: string | null; n: number }>`
     select kind, zone, count(*)::int as n from lab_events group by kind, zone
   `;
-  const stats: LabStats = { views: 0, sims: 0, hijau: 0, kuning: 0, merah: 0 };
+  const stats = { ...empty };
   for (const row of rows) {
     if (row.kind === "view") stats.views += row.n;
     if (row.kind === "sim") {

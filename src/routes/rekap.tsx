@@ -1,46 +1,42 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { getLabStats, type LabStats } from "@/lib/stats";
+import { usePinjem } from "@/lib/cashflow/store";
 
 export const Route = createFileRoute("/rekap")({ component: RekapPage });
 
 function RekapPage() {
-  const [stats, setStats] = useState<LabStats | null>(null);
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    void getLabStats()
-      .then(setStats)
-      .catch(() => setError(true));
-  }, []);
+  const journal = usePinjem((s) => s.journal);
 
   return (
     <div className="flex flex-col gap-6">
       <header className="flex flex-col gap-2">
-        <p className="text-xs uppercase tracking-wider text-muted-foreground">Rekap lab</p>
-        <h1 className="text-3xl font-semibold tracking-tight">Pengunjung dan simulasi</h1>
+        <p className="text-xs uppercase tracking-wider text-muted-foreground">Pengampu</p>
+        <h1 className="text-3xl font-semibold tracking-tight">Rekap pemakaian</h1>
         <p className="max-w-2xl text-sm text-muted-foreground">
-          Angka agregat, tanpa nama dan tanpa isi RAB. Bukan bagian tugas mahasiswa.
+          Angka di browser ini, tanpa nama. Mahasiswa tidak perlu membuka halaman ini.
         </p>
       </header>
 
-      {error ? (
-        <p className="text-sm text-muted-foreground">Rekap belum tersedia di sesi ini.</p>
-      ) : !stats ? (
-        <p className="text-sm text-muted-foreground">Memuat…</p>
-      ) : (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-          <Stat label="Kunjungan halaman" value={String(stats.views)} />
-          <Stat label="Simulasi tercatat" value={String(stats.sims)} />
-          <Stat label="Hasil hijau" value={String(stats.hijau)} />
-          <Stat label="Hasil kuning" value={String(stats.kuning)} />
-          <Stat label="Hasil merah" value={String(stats.merah)} />
-        </div>
-      )}
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <Stat label="Halaman dibuka" value={String(journal.views)} />
+        <Stat label="Simulasi diubah" value={String(journal.simCount)} />
+        <Stat label="Zona terakhir" value={journal.lastZone ?? "—"} />
+        <Stat label="Hasil hijau" value={String(journal.hijau)} />
+        <Stat label="Hasil kuning" value={String(journal.kuning)} />
+        <Stat label="Hasil merah" value={String(journal.merah)} />
+      </div>
 
       <Card>
-        <CardContent className="text-sm text-muted-foreground">
+        <CardContent className="flex flex-col gap-2 text-sm">
+          <p>
+            Proyek: {journal.openedProyek ? "dibuka" : "belum"}. Portofolio:{" "}
+            {journal.openedPortofolio ? "dibuka" : "belum"}. Akumulasi:{" "}
+            {journal.openedAkumulasi ? "dibuka" : "belum"}.
+          </p>
+          <p>
+            Preset bersamaan: {journal.usedBersamaan ? "ya" : "belum"}. Bergelombang:{" "}
+            {journal.usedBergelombang ? "ya" : "belum"}.
+          </p>
           <Link to="/" className="text-primary">
             Kembali ke Panduan
           </Link>

@@ -15,8 +15,12 @@ import {
 } from "./types";
 
 export type Journal = {
+  views: number;
   simCount: number;
   lastZone: Zone | null;
+  hijau: number;
+  kuning: number;
+  merah: number;
   usedBersamaan: boolean;
   usedBergelombang: boolean;
   openedProyek: boolean;
@@ -44,6 +48,7 @@ type PinjemActions = {
   patchTerms: (id: string, patch: Partial<PaymentTerms>) => void;
   patchCompany: (patch: Partial<Company>) => void;
   markJournal: (patch: Partial<Journal>) => void;
+  bumpView: () => void;
   bumpSim: (zone: Zone) => void;
   resetLesson: () => void;
 };
@@ -65,8 +70,12 @@ function hydrateList(list: Project[] | undefined, fallback: Project[]): Project[
 }
 
 const emptyJournal = (): Journal => ({
+  views: 0,
   simCount: 0,
   lastZone: null,
+  hijau: 0,
+  kuning: 0,
+  merah: 0,
   usedBersamaan: true,
   usedBergelombang: false,
   openedProyek: false,
@@ -129,12 +138,17 @@ export const usePinjem = create<PinjemState & PinjemActions>()(
         ),
       patchCompany: (patch) => set((s) => ({ company: { ...s.company, ...patch } })),
       markJournal: (patch) => set((s) => ({ journal: { ...s.journal, ...patch } })),
+      bumpView: () =>
+        set((s) => ({ journal: { ...s.journal, views: s.journal.views + 1 } })),
       bumpSim: (zone) =>
         set((s) => ({
           journal: {
             ...s.journal,
             simCount: s.journal.simCount + 1,
             lastZone: zone,
+            hijau: s.journal.hijau + (zone === "hijau" ? 1 : 0),
+            kuning: s.journal.kuning + (zone === "kuning" ? 1 : 0),
+            merah: s.journal.merah + (zone === "merah" ? 1 : 0),
           },
         })),
       resetLesson: () => set(initial()),

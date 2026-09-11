@@ -8,17 +8,19 @@ export function StatsBeacon() {
   const mode = usePinjem((s) => s.mode);
   const preset = usePinjem((s) => s.preset);
   const bumpSim = usePinjem((s) => s.bumpSim);
+  const bumpView = usePinjem((s) => s.bumpView);
   const markJournal = usePinjem((s) => s.markJournal);
   const sim = useSimulation();
   const first = useRef(true);
   const lastKey = useRef("");
 
   useEffect(() => {
+    bumpView();
     void recordLabEvent({ data: { kind: "view", path: pathname } }).catch(() => undefined);
     if (pathname === "/proyek") markJournal({ openedProyek: true });
     if (pathname === "/portofolio") markJournal({ openedPortofolio: true });
     if (pathname === "/akumulasi") markJournal({ openedAkumulasi: true });
-  }, [pathname, markJournal]);
+  }, [pathname, markJournal, bumpView]);
 
   useEffect(() => {
     const key = `${mode}:${preset}:${sim.zone}:${Math.round(sim.peakLoan)}`;
