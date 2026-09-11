@@ -125,13 +125,20 @@ function ProyekPage() {
                 }
               />
             </Field>
-            <label className="flex min-h-11 items-center justify-between gap-3 text-sm">
-              <span>Beku SP2D akhir tahun</span>
-              <Switch
-                checked={selected.terms.freezeYearEnd}
-                onCheckedChange={(on) => patchTerms(selected.id, { freezeYearEnd: on })}
-              />
-            </label>
+            {selected.market === "pemda" ? (
+              <label className="flex min-h-11 flex-col gap-1 text-sm">
+                <span className="flex items-center justify-between gap-3">
+                  Beku SP2D akhir tahun
+                  <Switch
+                    checked={selected.terms.freezeYearEnd}
+                    onCheckedChange={(on) => patchTerms(selected.id, { freezeYearEnd: on })}
+                  />
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  Khusus pemda. SP2D tertahan di pergantian tahun anggaran, kas masuk mundur.
+                </span>
+              </label>
+            ) : null}
           </CardContent>
         </Card>
       </div>
