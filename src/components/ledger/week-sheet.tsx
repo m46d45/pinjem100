@@ -29,11 +29,11 @@ export function WeekSheet({ sim }: { sim: Simulation }) {
         <ExcelButton sim={sim} file="pinjem100-proyek" />
       </div>
       <div className="rounded-lg bg-muted/60 p-3 font-mono text-[11px] leading-relaxed text-muted-foreground">
-        <p>Progress m = S(m)</p>
-        <p>Earning m = RAB E × (S(m) − S(m−1))</p>
-        <p>Expense m = (upah + bahan + alat) × porsi A m + B × porsi m</p>
-        <p>Receipt m = tagihan − PPh, setelah lag</p>
-        <p>Disbursement m = upah + bahan + alat + B, sesuai tempo, + PPN disetor</p>
+        <p>Progress m = kerja kumulatif sampai minggu m, dari kurva S (tabel dalam %; rumus pakai desimal, 5% = 0,05)</p>
+        <p>Earning m = RAB E × (Progress m − Progress m−1)</p>
+        <p>Expense m = RAB C × (Progress m − Progress m−1)</p>
+        <p>Receipt m = tagihan ke owner − PPh, masuk setelah lag</p>
+        <p>Disbursement m = upah + bahan + alat + overhead B + PPN disetor (upah/bahan/alat sesuai tempo)</p>
         <p>Net m = Receipt m − Disbursement m</p>
         <p>Kumulatif m = Kumulatif m−1 + Net m</p>
         <p>Kas di tangan m = ekuitas + Kumulatif m − bunga + Cair m − Kembali m</p>
