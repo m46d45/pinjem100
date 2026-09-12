@@ -201,4 +201,7 @@ export const DEFAULT_COMPANY: Company = {
   termCount: 4,
   termStartWeek: 22,
   termIntervalWeeks: 4,
+  projectShare: 0.7,
+  reserveYieldMonthly: 0.005,
+  reserveLagWeeks: 4,
 };

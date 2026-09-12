@@ -358,8 +358,14 @@ export function simulate(company: Company, projects: Project[]): Simulation {
   }));
 
   const pendingArrive = zeros(horizon);
+  const pendingLiq = zeros(horizon);
   const weeks: WeekPoint[] = [];
-  let cash = company.cashStart;
+  const share = clamp(company.projectShare ?? 1, 0.3, 1);
+  const cap = share >= 0.995 ? Number.POSITIVE_INFINITY : company.cashStart * share;
+  const reserveLag = Math.max(0, Math.round(company.reserveLagWeeks ?? 0));
+  const yieldWeekly = Math.max(0, company.reserveYieldMonthly ?? 0) * (12 / 52);
+  let cash = Number.isFinite(cap) ? cap : company.cashStart;
+  let reserve = Number.isFinite(cap) ? Math.max(0, company.cashStart - cap) : 0;
   let loan = 0;
   let pendingOut = 0;
   let peakLoan = 0;
@@ -372,6 +378,7 @@ export function simulate(company: Company, projects: Project[]): Simulation {
   let weeksOverLimit = 0;
   let totalInterest = 0;
   let totalDraw = 0;
+  let totalOtherIncome = 0;
   let cumIn = 0;
   let cumOut = 0;
   let accumFromZero = 0;
@@ -427,6 +434,9 @@ export function simulate(company: Company, projects: Project[]): Simulation {
 
     let draw = 0;
     let repay = 0;
+    let park = 0;
+    let liquidate = 0;
+    let otherIncome = 0;
 
     const arrived = pendingArrive[w] ?? 0;
     if (arrived > 0) {
@@ -435,6 +445,18 @@ export function simulate(company: Company, projects: Project[]): Simulation {
       draw += arrived;
       totalDraw += arrived;
       pendingOut = Math.max(0, pendingOut - arrived);
+    }
+
+    const liqArrived = pendingLiq[w] ?? 0;
+    if (liqArrived > 1) {
+      cash += liqArrived;
+      liquidate += liqArrived;
+    }
+
+    if (reserve > 1 && yieldWeekly > 0) {
+      otherIncome = reserve * yieldWeekly;
+      reserve += otherIncome;
+      totalOtherIncome += otherIncome;
     }
 
     const interest = loan * weeklyRate;
@@ -459,6 +481,24 @@ export function simulate(company: Company, projects: Project[]): Simulation {
       return req;
     };
 
+    const scheduleLiquidate = (amount: number) => {
+      const req = Math.min(amount, reserve);
+      if (req <= 1) return 0;
+      reserve -= req;
+      const arriveWeek = w + reserveLag;
+      if (arriveWeek === w) {
+        cash += req;
+        liquidate += req;
+      } else if (arriveWeek < horizon) {
+        pendingLiq[arriveWeek] += req;
+      }
+      return req;
+    };
+
+    if (cash < 0 && reserve > 1) {
+      scheduleLiquidate(-cash);
+    }
+
     if (company.debtScheme === "term") {
       if (w === company.termDrawWeek) {
         const wanted =
@@ -481,6 +521,12 @@ export function simulate(company: Company, projects: Project[]): Simulation {
       repay = Math.min(loan, cash);
       loan -= repay;
       cash -= repay;
+    }
+
+    if (Number.isFinite(cap) && cash > cap + 1) {
+      park = cash - cap;
+      cash -= park;
+      reserve += park;
     }
 
     const unused = company.loanLimit - loan - pendingOut;
@@ -534,6 +580,10 @@ export function simulate(company: Company, projects: Project[]): Simulation {
       laborOut,
       materialOut,
       otherOut,
+      reserve,
+      park,
+      liquidate,
+      otherIncome,
       projectIn,
       projectOut,
       projectWork,
@@ -575,7 +625,7 @@ export function simulate(company: Company, projects: Project[]): Simulation {
   const cogs = enabledBreak.reduce((s, b) => s + b.directCost, 0);
   const grossProfit = revenue - cogs;
   const taxPph = revenue * company.pphRate;
-  const ebit = grossProfit;
+  const ebit = grossProfit + totalOtherIncome;
   const ebt = ebit - totalInterest;
   const netProfit = ebt - taxPph;
   const ppnKeluaran = weeks.reduce((s, w) => s + w.ppnKeluaran, 0);
@@ -585,6 +635,7 @@ export function simulate(company: Company, projects: Project[]): Simulation {
     revenue,
     cogs,
     grossProfit,
+    otherIncome: totalOtherIncome,
     ebit,
     interest: totalInterest,
     ebt,
@@ -624,6 +675,8 @@ export function simulate(company: Company, projects: Project[]): Simulation {
     projects: breakdowns,
     loanLimit: company.loanLimit,
     cashStart: company.cashStart,
+    totalOtherIncome,
+    endReserve: reserve,
     income,
     ratios,
   };

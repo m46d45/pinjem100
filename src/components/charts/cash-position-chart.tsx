@@ -22,6 +22,7 @@ export function CashPositionChart({ sim, title }: { sim: Simulation; title?: str
     accum: Math.round(w.accumulatedOps),
     kas: Math.round(w.cash),
     pinjam: Math.round(w.loan),
+    cadangan: Math.round(w.reserve),
   }));
 
   return (
@@ -46,6 +47,10 @@ export function CashPositionChart({ sim, title }: { sim: Simulation; title?: str
           <span className="inline-block h-px w-4 border-t border-dashed border-loan" />
           Utang terpakai
         </li>
+        <li className="inline-flex items-center gap-1.5">
+          <span className="inline-block h-0.5 w-4 bg-foreground" />
+          Cadangan
+        </li>
       </ul>
       <ClientChart height={300}>
         <div className="h-[260px] w-full sm:h-[300px]">
@@ -66,6 +71,7 @@ export function CashPositionChart({ sim, title }: { sim: Simulation; title?: str
                   if (name === "accum") return [formatRpCompact(n), "Kas kumulatif operasional"];
                   if (name === "kas") return [formatRpCompact(n), "Kas di tangan (setelah utang)"];
                   if (name === "pinjam") return [formatRpCompact(n), "Utang terpakai"];
+                  if (name === "cadangan") return [formatRpCompact(n), "Cadangan"];
                   return [formatRpCompact(n), String(name)];
                 }}
                 labelFormatter={(l) => `Minggu ${String(l).replace("M", "")}`}
@@ -119,6 +125,14 @@ export function CashPositionChart({ sim, title }: { sim: Simulation; title?: str
                 strokeDasharray="4 4"
                 dot={false}
                 strokeWidth={1.5}
+              />
+              <Line
+                type="monotone"
+                dataKey="cadangan"
+                name="cadangan"
+                stroke="var(--color-foreground)"
+                dot={false}
+                strokeWidth={1.6}
               />
             </ComposedChart>
           </ResponsiveContainer>

@@ -13,6 +13,7 @@ export function IncomeStatementTable({
     { label: "Revenue (Pendapatan / DPP)", value: formatRp(income.revenue), hint: "Nilai kontrak tanpa PPN" },
     { label: "− Cost of sales (Beban pokok)", value: formatRp(income.cogs) },
     { label: "= Gross profit (Laba kotor)", value: formatRp(income.grossProfit), strong: true },
+    { label: "+ Other income (Hasil cadangan)", value: formatRp(income.otherIncome) },
     { label: "EBIT (Laba usaha)", value: formatRp(income.ebit) },
     { label: "− Interest (Beban bunga)", value: formatRp(income.interest) },
     { label: "= EBT (Laba sebelum pajak)", value: formatRp(income.ebt) },

@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { LoanChart } from "@/components/charts/loan-chart";
 import { FinancePanel } from "@/components/controls/finance-panel";
+import { ReservePanel } from "@/components/controls/reserve-panel";
 import { ZonePanel } from "@/components/meja/zone-panel";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatPct, formatRatio } from "@/lib/cashflow/engine";
+import { formatRatio } from "@/lib/cashflow/engine";
 import { monthLabel, formatRp, formatRpCompact } from "@/lib/format";
 import type { Simulation } from "@/lib/cashflow/types";
 import { usePinjem, useSimulation } from "@/lib/cashflow/store";
@@ -19,15 +20,16 @@ function PinjamPage() {
     <div className="flex flex-col gap-6">
       <header className="flex flex-col gap-2">
         <p className="text-xs uppercase tracking-wider text-muted-foreground">
-          Utang, ekuitas, pencairan
+          Utang, ekuitas, cadangan
         </p>
         <h1 className="text-3xl font-semibold tracking-tight">Pinjam</h1>
       </header>
 
       <div className="grid gap-4 lg:grid-cols-5">
         <Card className="lg:col-span-2">
-          <CardContent>
+          <CardContent className="flex flex-col gap-8">
             <FinancePanel />
+            <ReservePanel />
           </CardContent>
         </Card>
         <Card className="lg:col-span-3">
@@ -40,11 +42,11 @@ function PinjamPage() {
 
       <section className="grid gap-3 sm:grid-cols-3">
         <Stat label="Drawn debt (puncak)" value={formatRpCompact(sim.peakLoan)} />
+        <Stat label="Cadangan akhir" value={formatRpCompact(sim.endReserve)} />
+        <Stat label="Hasil cadangan" value={formatRpCompact(sim.totalOtherIncome)} />
         <Stat label="Minggu terutang" value={`${sim.weeksInDebt} minggu`} />
         <Stat label="Interest (Beban bunga)" value={formatRpCompact(sim.totalInterest)} />
         <Stat label="DER" value={formatRatio(sim.ratios.der)} />
-        <Stat label="Debt ratio" value={formatPct(sim.ratios.debtRatio)} />
-        <Stat label="ROE" value={formatPct(sim.ratios.roe)} />
       </section>
 
       <Card>

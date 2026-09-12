@@ -93,6 +93,12 @@ export type Company = {
   termCount: number;
   termStartWeek: number;
   termIntervalWeeks: number;
+  /** Share of equity allowed as operating cash. Rest is cadangan. */
+  projectShare: number;
+  /** Monthly yield on cadangan. */
+  reserveYieldMonthly: number;
+  /** Weeks until a cadangan sale becomes cash. */
+  reserveLagWeeks: number;
 };
 
 export type WeekPoint = {
@@ -122,6 +128,10 @@ export type WeekPoint = {
   laborOut: number;
   materialOut: number;
   otherOut: number;
+  reserve: number;
+  park: number;
+  liquidate: number;
+  otherIncome: number;
   projectIn: Record<string, number>;
   projectOut: Record<string, number>;
   projectWork: Record<string, number>;
@@ -151,6 +161,7 @@ export type IncomeStatement = {
   revenue: number;
   cogs: number;
   grossProfit: number;
+  otherIncome: number;
   ebit: number;
   interest: number;
   ebt: number;
@@ -189,6 +200,8 @@ export type Simulation = {
   projects: ProjectBreakdown[];
   loanLimit: number;
   cashStart: number;
+  totalOtherIncome: number;
+  endReserve: number;
   income: IncomeStatement;
   ratios: Ratios;
 };

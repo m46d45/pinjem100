@@ -22,7 +22,7 @@ const SPACES: { to: "/proyek" | "/portofolio" | "/akumulasi" | "/pinjam"; name: 
   {
     to: "/pinjam",
     name: "Pinjam",
-    about: "Setting ekuitas dan utang, grafik pinjaman, rekap termyn.",
+    about: "Ekuitas, cadangan, utang, grafik pinjaman, rekap termyn.",
   },
 ];
 
@@ -55,6 +55,7 @@ function PanduanPage() {
             <li>Melihat kas menumpuk minus meskipun laba positif.</li>
             <li>Membandingkan satu pasar dengan berbagai pasar, dan jadwal mulai yang berbeda.</li>
             <li>Menimbang ekuitas dan utang, termasuk jeda pencairan dan termyn.</li>
+            <li>Melihat hasil cadangan di laba rugi, sementara uangnya belum cair.</li>
           </ul>
         </CardContent>
       </Card>

@@ -45,9 +45,9 @@ function AkumulasiPage() {
         <Stat label="Kas kumulatif terdalam" value={formatRpCompact(sim.minAccum)} />
         <Stat label="Puncak utang terpakai" value={formatRpCompact(sim.peakLoan)} />
         <Stat label="Kas di tangan terendah" value={formatRpCompact(sim.minCash)} />
-        <Stat label="Interest (Beban bunga)" value={formatRpCompact(sim.totalInterest)} />
+        <Stat label="Cadangan akhir" value={formatRpCompact(sim.endReserve)} />
+        <Stat label="Hasil cadangan" value={formatRpCompact(sim.totalOtherIncome)} />
         <Stat label="Net profit (Laba bersih)" value={formatRpCompact(sim.income.netProfit)} />
-        <Stat label="DER" value={sim.ratios.der.toFixed(2).replace(".", ",")} />
       </section>
 
       <Card>
