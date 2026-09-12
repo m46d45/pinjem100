@@ -34,6 +34,8 @@ function KeuanganPage() {
   const mode = usePinjem((s) => s.mode);
   const year = usePinjem((s) => s.company.fiscalYear);
 
+  const setMode = usePinjem((s) => s.setMode);
+
   const sim = scope === "proyek" ? projectSim : portfolioSim;
   const months = summarizeMonths(sim, year);
   const enabled = projects.filter((p) => p.enabled);
@@ -107,9 +109,29 @@ function KeuanganPage() {
             ))}
           </div>
         ) : (
-          <p className="mt-2 text-xs text-muted-foreground">
-            {enabled.map((p) => p.name).join(" · ") || "Tidak ada proyek nyala"}
-          </p>
+          <div className="mt-3 flex flex-col gap-2">
+            <p className="text-xs uppercase tracking-wider text-muted-foreground">Jenis portofolio</p>
+            <div className="grid grid-cols-2 gap-2">
+              {(["satu-pasar", "berbagai-pasar"] as const).map((m) => (
+                <button
+                  key={m}
+                  type="button"
+                  onClick={() => setMode(m)}
+                  className={cn(
+                    "min-h-11 rounded-lg px-3 py-2 text-sm",
+                    mode === m
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-secondary text-secondary-foreground",
+                  )}
+                >
+                  {MODE_LABEL[m]}
+                </button>
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {enabled.map((p) => p.name).join(" · ") || "Tidak ada proyek nyala"}
+            </p>
+          </div>
         )}
       </div>
 

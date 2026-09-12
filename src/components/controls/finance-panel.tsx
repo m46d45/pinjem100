@@ -20,8 +20,8 @@ export function FinancePanel() {
 
       <Field label="Equity (Ekuitas / Modal sendiri)" value={formatRpCompact(company.cashStart)}>
         <Slider
-          min={20_000_000}
-          max={200_000_000}
+          min={0}
+          max={300_000_000}
           step={5_000_000}
           value={[company.cashStart]}
           onValueChange={(v) => patch({ cashStart: v[0] ?? 70_000_000 })}
@@ -34,14 +34,15 @@ export function FinancePanel() {
         value={formatRpCompact(company.loanLimit)}
       >
         <Slider
-          min={30_000_000}
+          min={0}
           max={300_000_000}
-          step={10_000_000}
+          step={5_000_000}
           value={[company.loanLimit]}
           onValueChange={(v) => patch({ loanLimit: v[0] ?? 100_000_000 })}
           aria-label="Fasilitas utang"
         />
       </Field>
+      <p className="text-xs text-muted-foreground">Skala sama: 0–300 juta.</p>
 
       <div>
         <p className="mb-2 text-xs uppercase tracking-wider text-muted-foreground">Sumber</p>

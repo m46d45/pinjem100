@@ -240,8 +240,8 @@ export const PRESET_BLURB: Record<StartPreset, string> = {
 };
 
 export const MODE_LABEL: Record<PortfolioMode, string> = {
-  "satu-pasar": "Satu pasar",
-  "berbagai-pasar": "Berbagai pasar",
+  "satu-pasar": "Satu pasar (seragam)",
+  "berbagai-pasar": "Berbagai pasar (tidak seragam)",
 };
 
 export const LENDER_LABEL: Record<Lender, string> = {

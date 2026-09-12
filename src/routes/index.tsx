@@ -12,12 +12,12 @@ const SPACES: { to: "/proyek" | "/portofolio" | "/keuangan"; name: string; about
   {
     to: "/portofolio",
     name: "Portofolio",
-    about: "Tiga proyek, satu atau berbagai pasar, kas gabungan, posisi kas, laba rugi perusahaan.",
+    about: "Tiga proyek. Satu pasar (seragam) atau berbagai pasar (tidak seragam). Kas gabungan, laba rugi perusahaan.",
   },
   {
     to: "/keuangan",
     name: "Keuangan",
-    about: "Setting ekuitas dan utang perusahaan. Grafik: Portofolio (default) atau Satu proyek.",
+    about: "Setting ekuitas dan utang perusahaan. Grafik: satu proyek, atau portofolio seragam / tidak seragam.",
   },
 ];
 
@@ -70,7 +70,7 @@ const TERMS: { group: string; items: { name: string; about: string }[] }[] = [
       { name: "Ekuitas", about: "Modal sendiri di kas awal." },
       { name: "Fasilitas utang", about: "Plafon KMK. Batas, bukan jumlah yang otomatis terpakai." },
       { name: "Puncak utang terpakai", about: "Kebutuhan kas yang benar-benar ditarik. Ini yang dibawa ke bank." },
-      { name: "Lingkup grafik", about: "Di Keuangan: Portofolio (kas perusahaan) atau Satu proyek. Setting tetap perusahaan." },
+      { name: "Lingkup grafik", about: "Di Keuangan: satu proyek, portofolio seragam, atau portofolio tidak seragam. Setting tetap perusahaan." },
       { name: "Zona hijau / kuning / merah", about: "Longgar, mepet, atau menembus plafon." },
       { name: "Cadangan", about: "Kas di luar proyek. Hasilnya masuk laba, cairnya bisa mundur." },
       { name: "Parkir / cair", about: "Kelebihan kas dipindah ke cadangan; cadangan dijual kembali ke proyek." },
