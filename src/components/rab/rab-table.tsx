@@ -41,28 +41,34 @@ export function RabTable({ project, ppnRate }: { project: Project; ppnRate: numb
               amount={item.amount}
             />
           ))}
-          <ItemRow
-            name={`Keuntungan ${Math.round(roll.profitRate * 100)}%`}
-            activity={`${Math.round(roll.profitRate * 100)}% × (langsung + overhead), sebelum PPN`}
-            amount={roll.keuntungan}
-          />
-          <SumRow label="Subtotal biaya tidak langsung" amount={roll.tidakLangsung} />
+          <SumRow label="Subtotal biaya tidak langsung" amount={roll.overhead} />
 
           <SumRow
             label="C. Biaya total (A + B)"
-            amount={roll.total}
-            hint="Pokok + keuntungan, sebelum PPN"
+            amount={roll.pokok}
+            hint="Belum termasuk keuntungan dan PPN"
             tone
           />
-          <ItemRow
-            name={`D. PPN ${pct}%`}
-            activity={`${pct}% × biaya total`}
-            amount={roll.ppn}
+          <SumRow
+            label="D. Keuntungan 10%"
+            amount={roll.keuntungan}
+            hint="10% × C, sebelum PPN"
           />
           <SumRow
-            label="E. Nilai kontrak (C + D)"
+            label="E. Biaya total & keuntungan (C + D)"
+            amount={roll.total}
+            hint="DPP — nilai kontrak tanpa PPN"
+            tone
+          />
+          <SumRow
+            label={`F. PPN ${pct}%`}
+            amount={roll.ppn}
+            hint={`${pct}% × E`}
+          />
+          <SumRow
+            label="G. Nilai kontrak (E + F)"
             amount={roll.kontrak}
-            hint="Biaya total termasuk PPN"
+            hint="Biaya total & keuntungan termasuk PPN"
             tone
           />
         </tbody>
