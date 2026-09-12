@@ -116,8 +116,8 @@ export function satuPasarProjects(): Project[] {
 export function berbagaiPasarProjects(): Project[] {
   const drainase: Project = {
     id: "drainase",
-    name: "Drainase Kelurahan",
-    owner: "Pemda — APBD 2026",
+    name: "Drainase — Ujungberung",
+    owner: "Pemda — Ujungberung",
     market: "pemda",
     contractValue: 620_000_000,
     workShape: "normal",
@@ -155,8 +155,8 @@ export function berbagaiPasarProjects(): Project[] {
 
   const subkon: Project = {
     id: "subkon",
-    name: "Finishing ruko 3 pintu",
-    owner: "Maincon CV Karya",
+    name: "Finishing Ruko — Pasteur",
+    owner: "Maincon — Bandung",
     market: "subkon",
     contractValue: 280_000_000,
     workShape: "back",

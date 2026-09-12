@@ -68,17 +68,38 @@ function hydrateProject(p: Project): Project {
   };
 }
 
+function anonIdentity(p: Project): Project {
+  if (p.id === "sari" || p.id === "sari-mix" || /Bu Sari/i.test(p.name)) {
+    return { ...p, name: "Rumah 2 Lantai — Cileunyi", owner: "Owner — Cileunyi" };
+  }
+  if (p.id === "andi" || /Pak Andi/i.test(p.name)) {
+    return { ...p, name: "Rumah Type 70 — Cimahi", owner: "Owner — Cimahi" };
+  }
+  if (p.id === "lina" || /Bu Lina/i.test(p.name)) {
+    return { ...p, name: "Renovasi Rumah — Lembang", owner: "Owner — Lembang" };
+  }
+  if (p.id === "drainase") {
+    return { ...p, name: "Drainase — Ujungberung", owner: "Pemda — Ujungberung" };
+  }
+  if (p.id === "subkon" || /CV Karya/i.test(p.owner + p.name)) {
+    return { ...p, name: "Finishing Ruko — Pasteur", owner: "Maincon — Bandung" };
+  }
+  return p;
+}
+
 function hydrateList(list: Project[] | undefined, fallback: Project[]): Project[] {
   if (!Array.isArray(list) || !list[0]?.rab?.length) return fallback;
   const byId = Object.fromEntries(fallback.map((p) => [p.id, p]));
   return list.map((p) => {
     const fresh = byId[p.id];
-    return hydrateProject({
-      ...p,
-      name: fresh?.name ?? p.name,
-      owner: fresh?.owner ?? p.owner,
-      notes: fresh?.notes ?? p.notes,
-    });
+    return hydrateProject(
+      anonIdentity({
+        ...p,
+        name: fresh?.name ?? p.name,
+        owner: fresh?.owner ?? p.owner,
+        notes: fresh?.notes ?? p.notes,
+      }),
+    );
   });
 }
 
