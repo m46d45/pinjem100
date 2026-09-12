@@ -8,19 +8,28 @@ import {
   YAxis,
 } from "recharts";
 import type { Simulation } from "@/lib/cashflow/types";
-import { weekTickInterval } from "@/lib/format";
+import { weekShort } from "@/lib/format";
 import { ClientChart } from "./client-chart";
 import { chartBrush, ChartCaption } from "./chart-tools";
 
 export function ProgressScurve({
   sim,
   projectId,
+  fromWeek,
+  toWeek,
 }: {
   sim: Simulation;
   projectId: string;
+  fromWeek?: number;
+  toWeek?: number;
 }) {
-  const data = sim.weeks.map((w) => ({
-    label: `M${w.week + 1}`,
+  const weeks = sim.weeks.filter((w) => {
+    if (fromWeek != null && w.week < fromWeek) return false;
+    if (toWeek != null && w.week > toWeek) return false;
+    return true;
+  });
+  const data = weeks.map((w) => ({
+    label: weekShort(w.week),
     kerja: Math.round((w.projectWork[projectId] ?? 0) * 1000) / 10,
   }));
 
@@ -37,7 +46,8 @@ export function ProgressScurve({
               <XAxis
                 dataKey="label"
                 tick={{ fill: "var(--color-muted-foreground)", fontSize: 11 }}
-                interval={weekTickInterval(data.length)}
+                interval="preserveStartEnd"
+                minTickGap={24}
                 axisLine={false}
                 tickLine={false}
               />

@@ -10,7 +10,7 @@ import { RabTable } from "@/components/rab/rab-table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
-import { cropActiveWeeks, projectDuration, rabRollup } from "@/lib/cashflow/engine";
+import { cropActiveWeeks, projectDuration, projectWorkWindow, rabRollup } from "@/lib/cashflow/engine";
 import { MARKET_LABEL } from "@/lib/cashflow/types";
 import {
   usePinjem,
@@ -37,6 +37,7 @@ function ProyekPage() {
   }
 
   const duration = projectDuration(selected);
+  const work = projectWorkWindow(selected);
   const roll = rabRollup(selected, company.ppnRate);
   const view = { ...sim, weeks: cropActiveWeeks(sim.weeks) };
 
@@ -155,7 +156,12 @@ function ProyekPage() {
 
       <Card>
         <CardContent>
-          <ProgressScurve sim={view} projectId={selected.id} />
+          <ProgressScurve
+            sim={sim}
+            projectId={selected.id}
+            fromWeek={work.start}
+            toWeek={work.end}
+          />
         </CardContent>
       </Card>
 

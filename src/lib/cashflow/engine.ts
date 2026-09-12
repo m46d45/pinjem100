@@ -38,6 +38,13 @@ export function projectDuration(project: Project): number {
   );
 }
 
+/** Inclusive calendar weeks the project is on site. */
+export function projectWorkWindow(project: Project): { start: number; end: number } {
+  const start = project.startWeek;
+  const duration = Math.max(projectDuration(project), 1);
+  return { start, end: start + duration - 1 };
+}
+
 /** Weeks from first cash/kerja to last, plus a short pad — not the full fiscal year. */
 export function cropActiveWeeks(weeks: WeekPoint[], pad = 2): WeekPoint[] {
   let first = -1;

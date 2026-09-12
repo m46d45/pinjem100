@@ -77,23 +77,34 @@ export function PortfolioGantt({
 export function ProjectGantt({ project }: { project: Project }) {
   const duration = Math.max(projectDuration(project), 1);
   const step = duration <= 12 ? 1 : duration <= 24 ? 2 : 4;
-  const ticks = Array.from({ length: Math.floor((duration - 1) / step) + 1 }, (_, i) => i * step);
+  const ticks: number[] = [];
+  for (let w = 0; w < duration; w += step) ticks.push(w);
+  if (ticks[ticks.length - 1] !== duration - 1) ticks.push(duration - 1);
 
   return (
     <div className="flex flex-col gap-3">
       <h3 className="text-base font-medium tracking-tight">Gantt pekerjaan</h3>
+      <p className="text-xs text-muted-foreground">
+        {weekShort(project.startWeek)} – {weekShort(project.startWeek + duration - 1)}
+      </p>
       <div className="overflow-x-auto">
         <div className="min-w-[560px]">
-          <div className="mb-2 flex pl-36">
-            {ticks.map((w) => (
-              <div
-                key={w}
-                className="text-[10px] text-muted-foreground"
-                style={{ width: `${(step / duration) * 100}%` }}
-              >
-                {weekShort(project.startWeek + w)}
-              </div>
-            ))}
+          <div className="mb-2 flex items-end">
+            <div className="w-36 shrink-0" />
+            <div className="relative h-4 flex-1">
+              {ticks.map((w) => (
+                <span
+                  key={w}
+                  className="absolute text-[11px] tabular-nums text-foreground/70"
+                  style={{
+                    left: `${(w / duration) * 100}%`,
+                    transform: w >= duration - 1 ? "translateX(-90%)" : undefined,
+                  }}
+                >
+                  {weekShort(project.startWeek + w)}
+                </span>
+              ))}
+            </div>
           </div>
           <ul className="flex flex-col gap-2">
             {project.activities.map((a) => {
