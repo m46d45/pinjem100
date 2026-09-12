@@ -73,7 +73,11 @@ function PanduanPage() {
             ))}
           </ul>
           <p className="text-sm text-muted-foreground">
-            Modul lab ada di dokumen terpisah. Untuk salinan, hubungi pengampu.
+            Modul lab ada di dokumen terpisah. Untuk salinan, hubungi pengampu (
+            <a href="mailto:abduh@itb.ac.id" className="text-primary">
+              abduh@itb.ac.id
+            </a>
+            ).
           </p>
         </CardContent>
       </Card>
