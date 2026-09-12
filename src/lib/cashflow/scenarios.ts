@@ -86,24 +86,24 @@ export function satuPasarProjects(): Project[] {
     [
       house(
         "sari",
-        "Rumah Bu Sari",
-        "Bu Sari — Bandung Timur",
+        "Rumah 2 Lantai — Cileunyi",
+        "Owner — Cileunyi",
         880_000_000,
         0.95,
         "Rumah tinggal 2 lantai.",
       ),
       house(
         "andi",
-        "Rumah Pak Andi",
-        "Pak Andi — Cimahi",
+        "Rumah Type 70 — Cimahi",
+        "Owner — Cimahi",
         720_000_000,
         0.78,
         "Rumah type 70.",
       ),
       house(
         "lina",
-        "Renovasi Bu Lina",
-        "Bu Lina — Buahbatu",
+        "Renovasi Rumah — Lembang",
+        "Owner — Lembang",
         510_000_000,
         0.55,
         "Renovasi total.",
@@ -145,8 +145,8 @@ export function berbagaiPasarProjects(): Project[] {
 
   const rumah = house(
     "sari-mix",
-    "Rumah Bu Sari",
-    "Bu Sari — Bandung Timur",
+    "Rumah 2 Lantai — Cileunyi",
+    "Owner — Cileunyi",
     880_000_000,
     0.95,
     "Rumah tinggal 2 lantai.",

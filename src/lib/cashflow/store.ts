@@ -70,10 +70,16 @@ function hydrateProject(p: Project): Project {
 
 function hydrateList(list: Project[] | undefined, fallback: Project[]): Project[] {
   if (!Array.isArray(list) || !list[0]?.rab?.length) return fallback;
-  const notesById = Object.fromEntries(fallback.map((p) => [p.id, p.notes]));
-  return list.map((p) =>
-    hydrateProject({ ...p, notes: notesById[p.id] ?? p.notes }),
-  );
+  const byId = Object.fromEntries(fallback.map((p) => [p.id, p]));
+  return list.map((p) => {
+    const fresh = byId[p.id];
+    return hydrateProject({
+      ...p,
+      name: fresh?.name ?? p.name,
+      owner: fresh?.owner ?? p.owner,
+      notes: fresh?.notes ?? p.notes,
+    });
+  });
 }
 
 const emptyJournal = (): Journal => ({
