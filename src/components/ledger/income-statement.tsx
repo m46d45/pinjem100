@@ -49,12 +49,12 @@ export function IncomeStatementTable({
 
           <HeadRow label="Beban pokok" />
           <Line
-            label="− Cost of sales (Beban pokok)"
+            label="Cost of sales (Beban pokok)"
             formula="= RAB C"
             value={income.cogs}
           />
           <Line
-            label="= Gross profit (Laba kotor)"
+            label="Gross profit (Laba kotor)"
             formula="= RAB D  (= E − C = 10% × C)"
             value={income.grossProfit}
             sum
@@ -62,12 +62,12 @@ export function IncomeStatementTable({
 
           <HeadRow label="Pendapatan lain" />
           <Line
-            label="+ Other income (Hasil cadangan)"
+            label="Other income (Hasil cadangan)"
             formula="Hasil investasi di luar proyek  ·  tab Pinjam"
             value={income.otherIncome}
           />
           <Line
-            label="= EBIT (Laba usaha)"
+            label="EBIT (Laba usaha)"
             formula="Laba kotor + hasil cadangan"
             value={income.ebit}
             sum
@@ -75,23 +75,23 @@ export function IncomeStatementTable({
 
           <HeadRow label="Beban keuangan dan pajak" />
           <Line
-            label="− Interest (Beban bunga)"
+            label="Interest (Beban bunga)"
             formula="Utang × 12% per tahun, dihitung mingguan  ·  tab Pinjam"
             value={income.interest}
           />
           <Line
-            label="= EBT (Laba sebelum pajak)"
+            label="EBT (Laba sebelum pajak)"
             formula="Laba usaha − bunga"
             value={income.ebt}
             sum
           />
           <Line
-            label="− PPh Final 4(2)"
+            label="PPh Final 4(2)"
             formula={`${pph} × RAB E`}
             value={income.taxPph}
           />
           <Line
-            label="= Net profit (Laba bersih)"
+            label="Net profit (Laba bersih)"
             formula="EBT − PPh"
             value={income.netProfit}
             sum
