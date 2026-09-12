@@ -10,7 +10,7 @@ import { RabTable } from "@/components/rab/rab-table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
-import { cropActiveWeeks, projectDuration } from "@/lib/cashflow/engine";
+import { cropActiveWeeks, projectDuration, rabRollup } from "@/lib/cashflow/engine";
 import { MARKET_LABEL } from "@/lib/cashflow/types";
 import {
   usePinjem,
@@ -37,6 +37,7 @@ function ProyekPage() {
   }
 
   const duration = projectDuration(selected);
+  const roll = rabRollup(selected, company.ppnRate);
   const view = { ...sim, weeks: cropActiveWeeks(sim.weeks) };
 
   const flowRows = view.weeks.map((w) => ({
@@ -85,7 +86,7 @@ function ProyekPage() {
             <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
               <Meta label="Owner" value={selected.owner} />
               <Meta label="Pasar" value={MARKET_LABEL[selected.market]} />
-              <Meta label="Kontrak termasuk PPN" value={formatRpCompact(selected.contractValue)} />
+              <Meta label="Kontrak termasuk PPN" value={formatRpCompact(roll.kontrak)} />
               <Meta label="Durasi" value={`${duration} minggu`} />
             </div>
             <Field label="Mulai" value={weekLabel(selected.startWeek, company.fiscalYear)}>

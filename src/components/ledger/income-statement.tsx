@@ -36,7 +36,7 @@ export function IncomeStatementTable({
           <HeadRow label="Pendapatan usaha" />
           <Line
             label="Revenue (Pendapatan / DPP)"
-            formula={`Nilai kontrak ÷ (1 + ${vat}%)  ·  dari RAB baris C`}
+            formula={`(Biaya + 10%)  ·  RAB baris C, sebelum PPN`}
             value={income.revenue}
           />
 
@@ -48,7 +48,7 @@ export function IncomeStatementTable({
           />
           <Line
             label="= Gross profit (Laba kotor)"
-            formula="Pendapatan − beban pokok"
+            formula="10% × beban pokok  ·  keuntungan RAB, sebelum pajak"
             value={income.grossProfit}
             sum
           />

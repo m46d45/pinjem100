@@ -68,6 +68,8 @@ export function rabKind(item: { name: string; kind?: "langsung" | "tidak-langsun
   return "langsung";
 }
 
+export const PROFIT_RATE = 0.1;
+
 export function rabRollup(project: Project, ppnRate: number) {
   let langsung = 0;
   let overhead = 0;
@@ -75,20 +77,22 @@ export function rabRollup(project: Project, ppnRate: number) {
     if (rabKind(item) === "tidak-langsung") overhead += item.amount;
     else langsung += item.amount;
   }
-  const kontrak = project.contractValue;
-  const dpp = dppOf(kontrak, ppnRate);
-  const keuntungan = dpp - langsung - overhead;
-  const tidakLangsung = overhead + keuntungan;
-  const ppn = kontrak - dpp;
+  const pokok = langsung + overhead;
+  const keuntungan = pokok * PROFIT_RATE;
+  const total = pokok + keuntungan;
+  const ppn = total * ppnRate;
+  const kontrak = total + ppn;
   return {
     langsung,
     overhead,
+    pokok,
     keuntungan,
-    tidakLangsung,
-    total: dpp,
+    tidakLangsung: overhead + keuntungan,
+    total,
     ppn,
     kontrak,
     ppnRate,
+    profitRate: PROFIT_RATE,
   };
 }
 
@@ -248,7 +252,9 @@ function projectFlows(project: Project, company: Company, horizon: number): Proj
   const cost = directCost(project);
   const terms = project.terms;
   const endWeek = start + duration;
-  const dppContract = dppOf(project.contractValue, company.ppnRate);
+  const roll = rabRollup(project, company.ppnRate);
+  const dppContract = roll.total;
+  const grossContract = roll.kontrak;
   const mix = costMixOf(project);
   const pay = payPolicyOf(project, company);
 
@@ -275,7 +281,7 @@ function projectFlows(project: Project, company: Company, horizon: number): Proj
   };
 
   if (terms.guaranteePercent > 0) {
-    const jaminan = project.contractValue * terms.guaranteePercent;
+    const jaminan = grossContract * terms.guaranteePercent;
     addOut(start, jaminan, otherOut);
     addIn(endWeek + 4, jaminan);
   }
@@ -283,12 +289,12 @@ function projectFlows(project: Project, company: Company, horizon: number): Proj
   const mobilization = cost * 0.025;
   addOut(start, mobilization, otherOut);
 
-  const umGross = project.contractValue * terms.umPercent;
+  const umGross = grossContract * terms.umPercent;
   if (umGross > 0) {
     billOwner(start + terms.umLagWeeks, umGross);
   }
 
-  const remaining = project.contractValue - umGross;
+  const remaining = grossContract - umGross;
   const every = Math.max(1, terms.billingEveryWeeks);
   let lastBilledProgress = 0;
   let workCum = 0;
@@ -648,7 +654,8 @@ export function simulate(company: Company, projects: Project[]): Simulation {
     const cost = directCost(p);
     const duration = projectDuration(p);
     const flow = projectFlows(p, company, horizon);
-    const dpp = dppOf(p.contractValue, company.ppnRate);
+    const roll = rabRollup(p, company.ppnRate);
+    const dpp = roll.total;
     const totalIn = flow.inflow.reduce((a, b) => a + b, 0);
     const totalOut = flow.outflow.reduce((a, b) => a + b, 0);
     const totalEarning = flow.revenue.reduce((a, b) => a + b, 0);
@@ -657,7 +664,7 @@ export function simulate(company: Company, projects: Project[]): Simulation {
       id: p.id,
       name: p.name,
       market: p.market,
-      contractValue: p.contractValue,
+      contractValue: roll.kontrak,
       dpp,
       directCost: cost,
       margin: dpp - cost,

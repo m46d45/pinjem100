@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
-import { directCost, payPolicyOf, projectDuration } from "@/lib/cashflow/engine";
+import { payPolicyOf, projectDuration, rabRollup } from "@/lib/cashflow/engine";
 import { MARKET_LABEL } from "@/lib/cashflow/types";
 import type { Project } from "@/lib/cashflow/types";
 import { formatRpCompact, weekLabel } from "@/lib/format";
@@ -9,12 +9,13 @@ import { usePinjem } from "@/lib/cashflow/store";
 
 export function ProjectCard({ project }: { project: Project }) {
   const year = usePinjem((s) => s.company.fiscalYear);
+  const ppnRate = usePinjem((s) => s.company.ppnRate);
   const setStartWeek = usePinjem((s) => s.setStartWeek);
   const setEnabled = usePinjem((s) => s.setEnabled);
   const setSelected = usePinjem((s) => s.setSelected);
   const selectedId = usePinjem((s) => s.selectedId);
   const duration = projectDuration(project);
-  const cost = directCost(project);
+  const roll = rabRollup(project, ppnRate);
 
   return (
     <article
@@ -37,7 +38,7 @@ export function ProjectCard({ project }: { project: Project }) {
       </div>
       <div className="mt-3 flex flex-wrap gap-2">
         <Badge variant="muted">{MARKET_LABEL[project.market]}</Badge>
-        <Badge variant="muted">{formatRpCompact(project.contractValue)}</Badge>
+        <Badge variant="muted">{formatRpCompact(roll.kontrak)}</Badge>
         <Badge variant="muted">{duration} minggu</Badge>
       </div>
       <div className="mt-4">
@@ -55,7 +56,7 @@ export function ProjectCard({ project }: { project: Project }) {
         />
       </div>
       <p className="mt-1 text-xs text-muted-foreground">
-        Biaya langsung {formatRpCompact(cost)} · tempo bahan{" "}
+        Biaya {formatRpCompact(roll.pokok)} · keuntungan 10% · tempo bahan{" "}
         {payPolicyOf(project).materialDelayWeeks} minggu
       </p>
     </article>

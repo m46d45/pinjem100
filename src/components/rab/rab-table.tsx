@@ -42,8 +42,8 @@ export function RabTable({ project, ppnRate }: { project: Project; ppnRate: numb
             />
           ))}
           <ItemRow
-            name="Keuntungan"
-            activity="Sisa DPP − biaya"
+            name={`Keuntungan ${Math.round(roll.profitRate * 100)}%`}
+            activity={`${Math.round(roll.profitRate * 100)}% × (langsung + overhead), sebelum PPN`}
             amount={roll.keuntungan}
           />
           <SumRow label="Subtotal biaya tidak langsung" amount={roll.tidakLangsung} />
@@ -51,7 +51,7 @@ export function RabTable({ project, ppnRate }: { project: Project; ppnRate: numb
           <SumRow
             label="C. Biaya total (A + B)"
             amount={roll.total}
-            hint="Sama dengan DPP (nilai kontrak tanpa PPN)"
+            hint="Pokok + keuntungan, sebelum PPN"
             tone
           />
           <ItemRow
