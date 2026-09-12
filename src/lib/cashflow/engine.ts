@@ -293,9 +293,6 @@ function projectFlows(project: Project, company: Company, horizon: number): Proj
     addIn(endWeek + 4, jaminan);
   }
 
-  const mobilization = cost * 0.025;
-  addOut(start, mobilization, otherOut);
-
   const umGross = grossContract * terms.umPercent;
   if (umGross > 0) {
     billOwner(start + terms.umLagWeeks, umGross);
@@ -327,7 +324,9 @@ function projectFlows(project: Project, company: Company, horizon: number): Proj
     const materialCashWeek = Math.max(start, purchaseWeek + pay.materialDelayWeeks);
     addOut(materialCashWeek, materialWork, materialOut);
     if (materialCashWeek >= 0 && materialCashWeek < horizon && materialWork > 0) {
-      ppnMasukan[materialCashWeek] += dppOf(materialWork, company.ppnRate) * company.ppnRate;
+      const materialPpn = materialWork * company.ppnRate;
+      addOut(materialCashWeek, materialPpn, otherOut);
+      ppnMasukan[materialCashWeek] += materialPpn;
     }
 
     const isBillWeek = (i + 1) % every === 0 || i === duration - 1;
@@ -345,6 +344,7 @@ function projectFlows(project: Project, company: Company, horizon: number): Proj
   const retainedTotal = remaining * terms.retentionPercent;
   billOwner(endWeek + terms.retentionLagWeeks, retainedTotal);
 
+  let vatCredit = 0;
   for (let period = 0; period < horizon; period += 4) {
     let kel = 0;
     let mas = 0;
@@ -352,12 +352,17 @@ function projectFlows(project: Project, company: Company, horizon: number): Proj
       kel += ppnKeluaran[w] ?? 0;
       mas += ppnMasukan[w] ?? 0;
     }
-    const net = Math.max(0, kel - mas);
-    const remitWeek = period + 5;
-    if (net && remitWeek < horizon) {
-      outflow[remitWeek] += net;
-      ppnRemit[remitWeek] += net;
-      otherOut[remitWeek] += net;
+    const due = kel - mas - vatCredit;
+    if (due > 0) {
+      vatCredit = 0;
+      const remitWeek = period + 5;
+      if (remitWeek < horizon) {
+        outflow[remitWeek] += due;
+        ppnRemit[remitWeek] += due;
+        otherOut[remitWeek] += due;
+      }
+    } else {
+      vatCredit = -due;
     }
   }
 
