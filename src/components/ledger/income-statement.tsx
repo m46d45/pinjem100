@@ -20,8 +20,15 @@ export function IncomeStatementTable({
       <div>
         <h3 className="text-base font-medium tracking-tight">Laporan laba rugi</h3>
         <p className="mt-1 text-xs text-muted-foreground">
-          Rumus di kolom kanan. Jumlah tebal adalah subtotal bagian.
+          Setiap pos usaha merujuk baris RAB. Jumlah tebal adalah subtotal bagian.
         </p>
+        <ul className="mt-3 grid gap-1 text-xs text-muted-foreground sm:grid-cols-2">
+          <li>RAB C → beban pokok</li>
+          <li>RAB D → laba kotor</li>
+          <li>RAB E → pendapatan (DPP)</li>
+          <li>RAB F → PPN keluaran (bukan laba)</li>
+          <li>RAB G → nilai kontrak (kas kotor)</li>
+        </ul>
       </div>
 
       <table className="w-full text-sm">
@@ -36,19 +43,19 @@ export function IncomeStatementTable({
           <HeadRow label="Pendapatan usaha" />
           <Line
             label="Revenue (Pendapatan / DPP)"
-            formula="RAB baris E  ·  biaya total & keuntungan, sebelum PPN"
+            formula="= RAB E"
             value={income.revenue}
           />
 
           <HeadRow label="Beban pokok" />
           <Line
             label="− Cost of sales (Beban pokok)"
-            formula="RAB baris C  ·  biaya langsung + tidak langsung"
+            formula="= RAB C"
             value={income.cogs}
           />
           <Line
             label="= Gross profit (Laba kotor)"
-            formula="RAB baris D  ·  10% × C, sebelum pajak"
+            formula="= RAB D  (= E − C = 10% × C)"
             value={income.grossProfit}
             sum
           />
@@ -80,7 +87,7 @@ export function IncomeStatementTable({
           />
           <Line
             label="− PPh Final 4(2)"
-            formula={`${pph} × DPP  ·  pajak penghasilan jasa konstruksi`}
+            formula={`${pph} × RAB E`}
             value={income.taxPph}
           />
           <Line
@@ -102,7 +109,7 @@ export function IncomeStatementTable({
         <div className="mt-3 grid gap-2 sm:grid-cols-2">
           <TaxChip
             label="Output VAT (PPN Keluaran)"
-            hint={`${vat}% × DPP saat tagihan`}
+            hint={`= RAB F  ·  ${vat}% × E`}
             value={formatRp(income.ppnKeluaran)}
           />
           <TaxChip
@@ -117,7 +124,7 @@ export function IncomeStatementTable({
           />
           <TaxChip
             label="PPh Final 4(2)"
-            hint={`${pph} × DPP, sudah di laba rugi`}
+            hint={`${pph} × RAB E`}
             value={formatRp(income.taxPph)}
           />
         </div>
