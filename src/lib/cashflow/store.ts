@@ -54,8 +54,11 @@ type PinjemActions = {
 };
 
 function hydrateProject(p: Project): Project {
+  const terms = { ...p.terms };
+  if (p.market === "rumah" && terms.umPercent === 0.18) terms.umPercent = 0.15;
   return {
     ...p,
+    terms,
     costMix: { ...DEFAULT_COST_MIX, ...(p.costMix ?? {}) },
     payPolicy: { ...DEFAULT_PAY_POLICY, ...(p.payPolicy ?? {}) },
   };

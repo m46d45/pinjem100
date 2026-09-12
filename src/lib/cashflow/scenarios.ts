@@ -8,7 +8,7 @@ import {
 import { applyStartPreset } from "./engine";
 
 const TERMS_RUMAH: PaymentTerms = {
-  umPercent: 0.18,
+  umPercent: 0.15,
   umLagWeeks: 2,
   retentionPercent: 0.05,
   progressLagWeeks: 2,
