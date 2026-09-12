@@ -6,11 +6,14 @@ export type Zone = "hijau" | "kuning" | "merah";
 export type Lender = "bank" | "rekan";
 export type DebtScheme = "revolving" | "term";
 
+export type RabKind = "langsung" | "tidak-langsung";
+
 export type RabItem = {
   id: string;
   name: string;
   amount: number;
   activityId: string;
+  kind: RabKind;
 };
 
 export type Activity = {

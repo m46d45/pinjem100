@@ -62,6 +62,36 @@ export function dppOf(gross: number, ppnRate: number): number {
   return gross / (1 + ppnRate);
 }
 
+export function rabKind(item: { name: string; kind?: "langsung" | "tidak-langsung" }): "langsung" | "tidak-langsung" {
+  if (item.kind) return item.kind;
+  if (/overhead|direksi|kantor/i.test(item.name)) return "tidak-langsung";
+  return "langsung";
+}
+
+export function rabRollup(project: Project, ppnRate: number) {
+  let langsung = 0;
+  let overhead = 0;
+  for (const item of project.rab) {
+    if (rabKind(item) === "tidak-langsung") overhead += item.amount;
+    else langsung += item.amount;
+  }
+  const kontrak = project.contractValue;
+  const dpp = dppOf(kontrak, ppnRate);
+  const keuntungan = dpp - langsung - overhead;
+  const tidakLangsung = overhead + keuntungan;
+  const ppn = kontrak - dpp;
+  return {
+    langsung,
+    overhead,
+    keuntungan,
+    tidakLangsung,
+    total: dpp,
+    ppn,
+    kontrak,
+    ppnRate,
+  };
+}
+
 export function costMixOf(project: Project): CostMix {
   const mix = project.costMix ?? DEFAULT_COST_MIX;
   const labor = Math.max(0, mix.labor);

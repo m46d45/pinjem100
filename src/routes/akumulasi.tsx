@@ -7,13 +7,14 @@ import { ZonePanel } from "@/components/meja/zone-panel";
 import { IncomeStatementTable } from "@/components/ledger/income-statement";
 import { ExcelButton } from "@/components/ledger/excel-button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useSimulation } from "@/lib/cashflow/store";
+import { usePinjem, useSimulation } from "@/lib/cashflow/store";
 import { formatRpCompact } from "@/lib/format";
 
 export const Route = createFileRoute("/akumulasi")({ component: AkumulasiPage });
 
 function AkumulasiPage() {
   const sim = useSimulation();
+  const ppnRate = usePinjem((s) => s.company.ppnRate);
 
   return (
     <div className="flex flex-col gap-6">
@@ -65,7 +66,7 @@ function AkumulasiPage() {
 
       <Card>
         <CardContent>
-          <IncomeStatementTable income={sim.income} ratios={sim.ratios} />
+          <IncomeStatementTable income={sim.income} ratios={sim.ratios} ppnRate={ppnRate} />
         </CardContent>
       </Card>
     </div>

@@ -61,6 +61,10 @@ function hydrateProject(p: Project): Project {
     terms,
     costMix: { ...DEFAULT_COST_MIX, ...(p.costMix ?? {}) },
     payPolicy: { ...DEFAULT_PAY_POLICY, ...(p.payPolicy ?? {}) },
+    rab: (p.rab ?? []).map((item) => ({
+      ...item,
+      kind: item.kind ?? (/overhead|direksi|kantor/i.test(item.name) ? "tidak-langsung" : "langsung"),
+    })),
   };
 }
 
@@ -175,7 +179,11 @@ export const usePinjem = create<PinjemState & PinjemActions>()(
         return {
           ...current,
           ...p,
-          company: { ...DEFAULT_COMPANY, ...current.company, ...p.company },
+          company: (() => {
+            const c = { ...DEFAULT_COMPANY, ...current.company, ...p.company };
+            if (c.ppnRate === 0.12) c.ppnRate = 0.11;
+            return c;
+          })(),
           satu,
           berbagai,
           selectedId: p.selectedId ?? current.selectedId,

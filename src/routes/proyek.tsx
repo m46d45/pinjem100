@@ -6,10 +6,11 @@ import { PayPolicyPanel } from "@/components/controls/pay-policy-panel";
 import { ProjectGantt } from "@/components/gantt/gantt-chart";
 import { IncomeStatementTable } from "@/components/ledger/income-statement";
 import { WeekSheet } from "@/components/ledger/week-sheet";
+import { RabTable } from "@/components/rab/rab-table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
-import { cropActiveWeeks, directCost, projectDuration } from "@/lib/cashflow/engine";
+import { cropActiveWeeks, projectDuration } from "@/lib/cashflow/engine";
 import { MARKET_LABEL } from "@/lib/cashflow/types";
 import {
   usePinjem,
@@ -17,7 +18,7 @@ import {
   useProjects,
   useSelectedProject,
 } from "@/lib/cashflow/store";
-import { formatRp, formatRpCompact, weekLabel } from "@/lib/format";
+import { formatRpCompact, weekLabel } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/proyek")({ component: ProyekPage });
@@ -35,7 +36,6 @@ function ProyekPage() {
     return <p>Tidak ada proyek.</p>;
   }
 
-  const cost = directCost(selected);
   const duration = projectDuration(selected);
   const view = { ...sim, weeks: cropActiveWeeks(sim.weeks) };
 
@@ -140,43 +140,9 @@ function ProyekPage() {
         </Card>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>RAB</CardTitle>
-        </CardHeader>
-        <CardContent className="overflow-x-auto p-0">
-          <table className="w-full min-w-[480px] text-sm">
-            <thead className="text-left text-xs uppercase tracking-wider text-muted-foreground">
-              <tr>
-                <th className="px-5 py-2 font-medium">Pekerjaan</th>
-                <th className="px-5 py-2 font-medium">Aktivitas</th>
-                <th className="px-5 py-2 text-right font-medium">Nilai</th>
-              </tr>
-            </thead>
-            <tbody>
-              {selected.rab.map((item) => (
-                <tr key={item.id} className="border-t border-border">
-                  <td className="px-5 py-2">{item.name}</td>
-                  <td className="px-5 py-2 text-muted-foreground">
-                    {selected.activities.find((a) => a.id === item.activityId)?.name}
-                  </td>
-                  <td className="px-5 py-2 text-right tabular-nums">{formatRp(item.amount)}</td>
-                </tr>
-              ))}
-              <tr className="border-t border-border font-medium">
-                <td className="px-5 py-2">Total biaya langsung</td>
-                <td />
-                <td className="px-5 py-2 text-right tabular-nums">{formatRp(cost)}</td>
-              </tr>
-              <tr className="border-t border-border">
-                <td className="px-5 py-2">Nilai kontrak (termasuk PPN)</td>
-                <td />
-                <td className="px-5 py-2 text-right tabular-nums">
-                  {formatRp(selected.contractValue)}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      <Card className="overflow-hidden">
+        <CardContent className="p-0">
+          <RabTable project={selected} ppnRate={company.ppnRate} />
         </CardContent>
       </Card>
 
@@ -212,7 +178,11 @@ function ProyekPage() {
 
       <Card>
         <CardContent>
-          <IncomeStatementTable income={sim.income} ratios={sim.ratios} />
+          <IncomeStatementTable
+            income={sim.income}
+            ratios={sim.ratios}
+            ppnRate={company.ppnRate}
+          />
         </CardContent>
       </Card>
     </div>
