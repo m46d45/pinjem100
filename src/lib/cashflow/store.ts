@@ -127,6 +127,14 @@ const initial = (): PinjemState => ({
   journal: emptyJournal(),
 });
 
+function preferProjectId(list: Project[], id: string): string {
+  if (list.some((p) => p.id === id)) return id;
+  const alias: Record<string, string> = { sari: "sari-mix", "sari-mix": "sari" };
+  const mapped = alias[id];
+  if (mapped && list.some((p) => p.id === mapped)) return mapped;
+  return list.find((p) => p.market === "rumah")?.id ?? list[0]?.id ?? id;
+}
+
 function mapProjects(state: PinjemState, fn: (p: Project) => Project): PinjemState {
   if (state.mode === "satu-pasar") return { ...state, satu: state.satu.map(fn) };
   return { ...state, berbagai: state.berbagai.map(fn) };
@@ -139,9 +147,7 @@ export const usePinjem = create<PinjemState & PinjemActions>()(
       setMode: (mode) =>
         set((s) => {
           const list = mode === "satu-pasar" ? s.satu : s.berbagai;
-          const selectedId = list.some((p) => p.id === s.selectedId)
-            ? s.selectedId
-            : (list[0]?.id ?? s.selectedId);
+          const selectedId = preferProjectId(list, s.selectedId);
           return { mode, selectedId };
         }),
       setPreset: (preset) =>

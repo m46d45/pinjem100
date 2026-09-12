@@ -67,6 +67,24 @@ function KeuanganPage() {
         <div className="grid grid-cols-2 gap-2">
           <button
             type="button"
+            onClick={() => {
+              const house =
+                projects.find((p) => p.id === "sari" || p.id === "sari-mix") ??
+                projects.find((p) => p.market === "rumah");
+              if (house) setSelected(house.id);
+              setScope("proyek");
+            }}
+            className={cn(
+              "min-h-11 rounded-lg px-3 py-2 text-sm",
+              scope === "proyek"
+                ? "bg-primary text-primary-foreground"
+                : "bg-secondary text-secondary-foreground",
+            )}
+          >
+            Satu proyek
+          </button>
+          <button
+            type="button"
             onClick={() => setScope("portofolio")}
             className={cn(
               "min-h-11 rounded-lg px-3 py-2 text-sm",
@@ -76,18 +94,6 @@ function KeuanganPage() {
             )}
           >
             Portofolio
-          </button>
-          <button
-            type="button"
-            onClick={() => setScope("proyek")}
-            className={cn(
-              "min-h-11 rounded-lg px-3 py-2 text-sm",
-              scope === "proyek"
-                ? "bg-primary text-primary-foreground"
-                : "bg-secondary text-secondary-foreground",
-            )}
-          >
-            Satu proyek
           </button>
         </div>
         {scope === "proyek" ? (
