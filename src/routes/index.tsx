@@ -7,17 +7,76 @@ const SPACES: { to: "/proyek" | "/portofolio" | "/keuangan"; name: string; about
   {
     to: "/proyek",
     name: "Proyek",
-    about: "Satu kontrak: setting, RAB, Gantt, kurva S, kas, laba rugi.",
+    about: "Satu kontrak: setting, RAB A–G, Gantt, kurva S, kas, laba rugi.",
   },
   {
     to: "/portofolio",
     name: "Portofolio",
-    about: "Tiga proyek, kas gabungan, posisi kas perusahaan, laba rugi.",
+    about: "Tiga proyek, satu atau berbagai pasar, kas gabungan, posisi kas, laba rugi perusahaan.",
   },
   {
     to: "/keuangan",
     name: "Keuangan",
-    about: "Ekuitas, cadangan, utang, grafik pinjaman, rekap termyn.",
+    about: "Ekuitas, cadangan, utang, zona, rekap termyn.",
+  },
+];
+
+const TERMS: { group: string; items: { name: string; about: string }[] }[] = [
+  {
+    group: "Empat arus",
+    items: [
+      { name: "Pendapatan (Earning)", about: "Kerja selesai. RAB E, diakui sesuai progres." },
+      { name: "Penerimaan (Receipt)", about: "Kas masuk. Bisa mundur karena lag, UM, retensi." },
+      { name: "Beban (Expense)", about: "Biaya diakui saat kerja. RAB C." },
+      { name: "Pengeluaran (Disbursement)", about: "Kas keluar ke tukang, toko, alat, pajak." },
+    ],
+  },
+  {
+    group: "RAB",
+    items: [
+      { name: "A", about: "Biaya langsung — upah, bahan, alat per pekerjaan." },
+      { name: "B", about: "Biaya tidak langsung — overhead." },
+      { name: "C", about: "Biaya total (A + B). Beban pokok di laba rugi." },
+      { name: "D", about: "Keuntungan 10% × C, sebelum pajak." },
+      { name: "E", about: "Biaya total & keuntungan (C + D). DPP, pendapatan." },
+      { name: "F", about: "PPN 11% × E. Bukan beban laba rugi." },
+      { name: "G", about: "Nilai kontrak (E + F). Kas kotor ke owner." },
+    ],
+  },
+  {
+    group: "Pajak dan kontrak",
+    items: [
+      { name: "DPP", about: "Dasar pengenaan pajak. Sama dengan RAB E." },
+      { name: "PPN", about: "Pajak pertambahan nilai 11%. Keluaran saat tagih, masukan saat beli bahan." },
+      { name: "PPh Final 4(2)", about: "1,75% × RAB E. Pajak penghasilan jasa konstruksi." },
+      { name: "UM", about: "Uang muka. Default rumah 15%." },
+      { name: "Lag", about: "Jeda cair. Tagihan, pinjaman, atau bayar ke toko." },
+      { name: "Tempo bayar", about: "Jeda kerja selesai sampai kas keluar ke tukang, toko, atau alat." },
+      { name: "Retensi", about: "Sisa ditahan owner sampai beres." },
+      { name: "Termyn", about: "Angsuran tagihan atau pengembalian utang." },
+      { name: "SP2D", about: "Pencairan pemda. Bisa beku di akhir tahun anggaran." },
+    ],
+  },
+  {
+    group: "Waktu kerja",
+    items: [
+      { name: "Gantt", about: "Jadwal pekerjaan dalam minggu kalender." },
+      { name: "Kurva S", about: "Progres kerja kumulatif 0–100%." },
+    ],
+  },
+  {
+    group: "Perusahaan",
+    items: [
+      { name: "Ekuitas", about: "Modal sendiri di kas awal." },
+      { name: "Fasilitas utang", about: "Plafon KMK. Puncak terpakai dibanding plafon = zona." },
+      { name: "Zona hijau / kuning / merah", about: "Longgar, mepet, atau menembus plafon." },
+      { name: "Cadangan", about: "Kas di luar proyek. Hasilnya masuk laba, cairnya bisa mundur." },
+      { name: "Parkir / cair", about: "Kelebihan kas dipindah ke cadangan; cadangan dijual kembali ke proyek." },
+      { name: "Kas kumulatif", about: "Jumlah penerimaan minus pengeluaran, dari nol, tanpa utang." },
+      { name: "Kas di tangan", about: "Uang di rekening: ekuitas, arus proyek, utang, cadangan yang sudah cair." },
+      { name: "DER", about: "Utang puncak ÷ ekuitas." },
+      { name: "ROE", about: "Laba bersih ÷ ekuitas." },
+    ],
   },
 ];
 
@@ -38,9 +97,7 @@ function PanduanPage() {
             Mahasiswa mempertimbangkan apakah suatu proyek atau portofolio masih muat di kas
             jangka pendek. Laba di laporan belum tentu ada uang di rekening.
           </p>
-          <p>
-            Buka sekali saat ada jaringan. Setelah itu bisa dipakai tanpa koneksi.
-          </p>
+          <p>Buka sekali saat ada jaringan. Setelah itu bisa dipakai tanpa koneksi.</p>
         </CardContent>
       </Card>
 
@@ -49,10 +106,10 @@ function PanduanPage() {
           <h2 className="text-lg font-medium">Setelah lab ini</h2>
           <ul className="list-disc space-y-2 pl-5">
             <li>Membedakan pendapatan, penerimaan, beban, dan pengeluaran.</li>
-            <li>Membaca RAB, Gantt, dan kurva S sebagai arus kas.</li>
+            <li>Membaca RAB A–G sampai ke laba rugi: C beban, D laba kotor, E pendapatan, F PPN, G kontrak.</li>
             <li>Melihat kas menumpuk minus meskipun laba positif.</li>
             <li>Membandingkan satu pasar dengan berbagai pasar, dan jadwal mulai yang berbeda.</li>
-            <li>Menimbang ekuitas dan utang, termasuk jeda pencairan dan termyn.</li>
+            <li>Menimbang ekuitas, cadangan, dan utang, termasuk jeda pencairan dan termyn.</li>
             <li>Melihat hasil cadangan di laba rugi, sementara uangnya belum cair.</li>
           </ul>
         </CardContent>
@@ -82,16 +139,21 @@ function PanduanPage() {
       </Card>
 
       <Card>
-        <CardContent className="flex flex-col gap-2 text-sm leading-relaxed">
+        <CardContent className="flex flex-col gap-5">
           <h2 className="text-lg font-medium">Istilah</h2>
-          <p>
-            <strong>Pendapatan</strong> (Earning) — kerja selesai.{" "}
-            <strong>Penerimaan</strong> (Receipt) — kas masuk. <strong>Beban</strong> (Expense) —
-            biaya diakui. <strong>Pengeluaran</strong> (Disbursement) — kas keluar.{" "}
-            <strong>DPP</strong> — nilai tanpa PPN. <strong>UM</strong> — uang muka.{" "}
-            <strong>Lag</strong> — jeda cair. <strong>Retensi</strong> — sisa ditahan owner.{" "}
-            <strong>DER</strong> — utang ÷ ekuitas. <strong>SP2D</strong> — pencairan pemda.
-          </p>
+          {TERMS.map((block) => (
+            <div key={block.group} className="flex flex-col gap-2">
+              <h3 className="text-xs uppercase tracking-wider text-muted-foreground">{block.group}</h3>
+              <dl className="flex flex-col gap-2 text-sm">
+                {block.items.map((t) => (
+                  <div key={t.name} className="grid gap-1 sm:grid-cols-[11rem_1fr] sm:gap-3">
+                    <dt className="font-medium">{t.name}</dt>
+                    <dd className="text-muted-foreground">{t.about}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          ))}
         </CardContent>
       </Card>
 

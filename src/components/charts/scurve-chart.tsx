@@ -72,7 +72,7 @@ export function ScurveChart({ sim }: { sim: Simulation }) {
         </div>
       </ClientChart>
       <p className="text-xs text-muted-foreground">
-        Kalau garis keluar di atas garis masuk, kontraktor sedang pre-finance — itu sebabnya pinjam.
+        Kalau garis keluar di atas garis masuk, kontraktor sedang pre-finance — itu sebabnya utang.
       </p>
     </figure>
   );

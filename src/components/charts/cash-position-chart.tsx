@@ -29,7 +29,7 @@ export function CashPositionChart({ sim, title }: { sim: Simulation; title?: str
   return (
     <figure className="flex flex-col gap-3">
       <ChartCaption file="pinjem100-akumulasi-kas" className="text-base">
-        {title ?? "Akumulasi kas"}
+        {title ?? "Posisi kas"}
       </ChartCaption>
       <ul className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
         <li className="inline-flex items-center gap-1.5">

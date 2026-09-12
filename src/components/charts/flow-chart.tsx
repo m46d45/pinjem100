@@ -237,7 +237,7 @@ export function FlowChart({
       </ClientChart>
       {showHole ? (
         <p className="text-xs font-medium">
-          Clue pinjam: {formatRpCompact(minAccum)} pada {weekShort(minWeek)}
+          Clue utang: {formatRpCompact(minAccum)} pada {weekShort(minWeek)}
         </p>
       ) : null}
       {showEnd ? (
