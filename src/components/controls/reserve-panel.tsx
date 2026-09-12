@@ -37,6 +37,38 @@ export function ReservePanel() {
       </p>
 
       <Field
+        label="Kelebihan diparkir"
+        value={`${Math.round((company.parkShare ?? 1) * 100)}%`}
+      >
+        <Slider
+          min={0}
+          max={100}
+          step={5}
+          value={[Math.round((company.parkShare ?? 1) * 100)]}
+          onValueChange={(v) => patch({ parkShare: (v[0] ?? 100) / 100 })}
+          aria-label="Kelebihan diparkir"
+        />
+      </Field>
+
+      <Field
+        label="Tempo parkir"
+        value={
+          (company.parkLagWeeks ?? 0) === 0
+            ? "Masuk minggu yang sama"
+            : `${company.parkLagWeeks} minggu`
+        }
+      >
+        <Slider
+          min={0}
+          max={4}
+          step={1}
+          value={[company.parkLagWeeks ?? 0]}
+          onValueChange={(v) => patch({ parkLagWeeks: v[0] ?? 0 })}
+          aria-label="Tempo parkir"
+        />
+      </Field>
+
+      <Field
         label="Hasil per bulan"
         value={`${monthly.toFixed(1).replace(".", ",")}%`}
       >
@@ -71,6 +103,8 @@ export function ReservePanel() {
       <div className="grid grid-cols-2 gap-2">
         <Mini label="Cadangan sekarang" value={formatRpCompact(last?.reserve ?? parked)} />
         <Mini label="Hasil tahun ini" value={formatRpCompact(sim.totalOtherIncome)} />
+        <Mini label="Keluar ke cadangan" value={formatRpCompact(sim.totalPark)} />
+        <Mini label="Cair ke proyek" value={formatRpCompact(sim.totalLiquidate)} />
       </div>
     </div>
   );

@@ -99,6 +99,10 @@ export type Company = {
   reserveYieldMonthly: number;
   /** Weeks until a cadangan sale becomes cash. */
   reserveLagWeeks: number;
+  /** Share of surplus operating cash parked to cadangan. */
+  parkShare: number;
+  /** Weeks until parked cash sits in cadangan. */
+  parkLagWeeks: number;
 };
 
 export type WeekPoint = {
@@ -202,6 +206,8 @@ export type Simulation = {
   cashStart: number;
   totalOtherIncome: number;
   endReserve: number;
+  totalPark: number;
+  totalLiquidate: number;
   income: IncomeStatement;
   ratios: Ratios;
 };

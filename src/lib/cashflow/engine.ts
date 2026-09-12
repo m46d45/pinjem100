@@ -359,10 +359,13 @@ export function simulate(company: Company, projects: Project[]): Simulation {
 
   const pendingArrive = zeros(horizon);
   const pendingLiq = zeros(horizon);
+  const pendingPark = zeros(horizon);
   const weeks: WeekPoint[] = [];
   const share = clamp(company.projectShare ?? 1, 0.3, 1);
   const cap = share >= 0.995 ? Number.POSITIVE_INFINITY : company.cashStart * share;
   const reserveLag = Math.max(0, Math.round(company.reserveLagWeeks ?? 0));
+  const parkLag = Math.max(0, Math.round(company.parkLagWeeks ?? 0));
+  const parkShare = clamp(company.parkShare ?? 1, 0, 1);
   const yieldWeekly = Math.max(0, company.reserveYieldMonthly ?? 0) * (12 / 52);
   let cash = Number.isFinite(cap) ? cap : company.cashStart;
   let reserve = Number.isFinite(cap) ? Math.max(0, company.cashStart - cap) : 0;
@@ -379,6 +382,8 @@ export function simulate(company: Company, projects: Project[]): Simulation {
   let totalInterest = 0;
   let totalDraw = 0;
   let totalOtherIncome = 0;
+  let totalPark = 0;
+  let totalLiquidate = 0;
   let cumIn = 0;
   let cumOut = 0;
   let accumFromZero = 0;
@@ -453,6 +458,11 @@ export function simulate(company: Company, projects: Project[]): Simulation {
       liquidate += liqArrived;
     }
 
+    const parkedArrive = pendingPark[w] ?? 0;
+    if (parkedArrive > 1) {
+      reserve += parkedArrive;
+    }
+
     if (reserve > 1 && yieldWeekly > 0) {
       otherIncome = reserve * yieldWeekly;
       reserve += otherIncome;
@@ -523,11 +533,22 @@ export function simulate(company: Company, projects: Project[]): Simulation {
       cash -= repay;
     }
 
-    if (Number.isFinite(cap) && cash > cap + 1) {
-      park = cash - cap;
-      cash -= park;
-      reserve += park;
+    if (Number.isFinite(cap) && cash > cap + 1 && parkShare > 0) {
+      const want = (cash - cap) * parkShare;
+      if (want > 1) {
+        cash -= want;
+        park = want;
+        const arriveWeek = w + parkLag;
+        if (arriveWeek === w) {
+          reserve += want;
+        } else if (arriveWeek < horizon) {
+          pendingPark[arriveWeek] += want;
+        }
+      }
     }
+
+    totalPark += park;
+    totalLiquidate += liquidate;
 
     const unused = company.loanLimit - loan - pendingOut;
     if (cash < -1 && unused <= 1) breached = true;
@@ -677,6 +698,8 @@ export function simulate(company: Company, projects: Project[]): Simulation {
     cashStart: company.cashStart,
     totalOtherIncome,
     endReserve: reserve,
+    totalPark,
+    totalLiquidate,
     income,
     ratios,
   };

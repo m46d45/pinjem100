@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { CashPositionChart } from "@/components/charts/cash-position-chart";
+import { ReserveFlowChart } from "@/components/charts/reserve-flow-chart";
 import { ScurveChart } from "@/components/charts/scurve-chart";
 import { PresetBar } from "@/components/controls/preset-bar";
 import { ZonePanel } from "@/components/meja/zone-panel";
@@ -41,11 +42,19 @@ function AkumulasiPage() {
         </CardContent>
       </Card>
 
+      <Card>
+        <CardContent>
+          <ReserveFlowChart sim={sim} />
+        </CardContent>
+      </Card>
+
       <section className="grid gap-3 sm:grid-cols-3">
         <Stat label="Kas kumulatif terdalam" value={formatRpCompact(sim.minAccum)} />
         <Stat label="Puncak utang terpakai" value={formatRpCompact(sim.peakLoan)} />
         <Stat label="Kas di tangan terendah" value={formatRpCompact(sim.minCash)} />
         <Stat label="Cadangan akhir" value={formatRpCompact(sim.endReserve)} />
+        <Stat label="Keluar ke cadangan" value={formatRpCompact(sim.totalPark)} />
+        <Stat label="Cair ke proyek" value={formatRpCompact(sim.totalLiquidate)} />
         <Stat label="Hasil cadangan" value={formatRpCompact(sim.totalOtherIncome)} />
         <Stat label="Net profit (Laba bersih)" value={formatRpCompact(sim.income.netProfit)} />
       </section>

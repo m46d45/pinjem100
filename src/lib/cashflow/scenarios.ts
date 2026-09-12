@@ -204,4 +204,6 @@ export const DEFAULT_COMPANY: Company = {
   projectShare: 0.7,
   reserveYieldMonthly: 0.005,
   reserveLagWeeks: 4,
+  parkShare: 1,
+  parkLagWeeks: 0,
 };
