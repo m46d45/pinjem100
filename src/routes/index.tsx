@@ -17,7 +17,7 @@ const SPACES: { to: "/proyek" | "/portofolio" | "/keuangan"; name: string; about
   {
     to: "/keuangan",
     name: "Keuangan",
-    about: "Ekuitas dan utang perusahaan. Grafik bisa satu proyek atau portofolio.",
+    about: "Setting ekuitas dan utang perusahaan. Grafik: Portofolio (default) atau Satu proyek.",
   },
 ];
 
@@ -61,14 +61,16 @@ const TERMS: { group: string; items: { name: string; about: string }[] }[] = [
     group: "Waktu kerja",
     items: [
       { name: "Gantt", about: "Jadwal pekerjaan dalam minggu kalender." },
-      { name: "Kurva S", about: "Progres kerja kumulatif 0–100%." },
+      { name: "Kurva S", about: "Progres kerja kumulatif 0–100%. Di spreadsheet: Progress m." },
     ],
   },
   {
     group: "Perusahaan",
     items: [
       { name: "Ekuitas", about: "Modal sendiri di kas awal." },
-      { name: "Fasilitas utang", about: "Plafon KMK. Puncak terpakai dibanding plafon = zona." },
+      { name: "Fasilitas utang", about: "Plafon KMK. Batas, bukan jumlah yang otomatis terpakai." },
+      { name: "Puncak utang terpakai", about: "Kebutuhan kas yang benar-benar ditarik. Ini yang dibawa ke bank." },
+      { name: "Lingkup grafik", about: "Di Keuangan: Portofolio (kas perusahaan) atau Satu proyek. Setting tetap perusahaan." },
       { name: "Zona hijau / kuning / merah", about: "Longgar, mepet, atau menembus plafon." },
       { name: "Cadangan", about: "Kas di luar proyek. Hasilnya masuk laba, cairnya bisa mundur." },
       { name: "Parkir / cair", about: "Kelebihan kas dipindah ke cadangan; cadangan dijual kembali ke proyek." },
@@ -110,6 +112,7 @@ function PanduanPage() {
             <li>Melihat kas menumpuk minus meskipun laba positif.</li>
             <li>Membandingkan satu pasar dengan berbagai pasar, dan jadwal mulai yang berbeda.</li>
             <li>Menimbang ekuitas, cadangan, dan utang, termasuk jeda pencairan dan termyn.</li>
+            <li>Memilih lingkup grafik Keuangan: satu proyek atau portofolio perusahaan.</li>
             <li>Melihat hasil cadangan di laba rugi, sementara uangnya belum cair.</li>
           </ul>
         </CardContent>
