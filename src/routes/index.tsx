@@ -43,6 +43,9 @@ function PanduanPage() {
             Mahasiswa mempertimbangkan apakah suatu proyek atau portofolio masih muat di kas
             jangka pendek. Laba di laporan belum tentu ada uang di rekening.
           </p>
+          <p>
+            Buka sekali saat ada jaringan. Setelah itu bisa dipakai tanpa koneksi.
+          </p>
         </CardContent>
       </Card>
 

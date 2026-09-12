@@ -12,6 +12,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!("serviceWorker" in navigator)) return;
     void navigator.serviceWorker.register("/sw.js").catch(() => undefined);
+    const pages = ["/", "/proyek", "/portofolio", "/akumulasi", "/pinjam"];
+    for (const path of pages) {
+      void fetch(path, { credentials: "same-origin" }).catch(() => undefined);
+    }
   }, []);
 
   return (
