@@ -30,7 +30,7 @@ export function WeekSheet({ sim }: { sim: Simulation }) {
       </div>
       <div className="rounded-lg bg-muted/60 p-3 font-mono text-[11px] leading-relaxed text-muted-foreground">
         <p>Pendapatan t = DPP × (S(t) − S(t−1))</p>
-        <p>Beban t = (upah + bahan + alat) × porsi kerja t</p>
+        <p>Beban t = (upah + bahan + alat) × porsi A t + overhead B × porsi t</p>
         <p>Penerimaan t = tagihan − PPh, setelah lag</p>
         <p>Pengeluaran t = upah/bahan/alat sesuai tempo + PPN disetor</p>
         <p>Kumulatif t = kumulatif t−1 + (penerimaan − pengeluaran)</p>

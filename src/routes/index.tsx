@@ -34,8 +34,8 @@ const TERMS: { group: string; items: { name: string; about: string }[] }[] = [
   {
     group: "RAB",
     items: [
-      { name: "A", about: "Biaya langsung — upah, bahan, alat per pekerjaan." },
-      { name: "B", about: "Biaya tidak langsung — overhead." },
+      { name: "A", about: "Biaya langsung — upah, bahan, alat. Porsi slider berlaku di sini." },
+      { name: "B", about: "Biaya tidak langsung — overhead, tidak dipecah porsi." },
       { name: "C", about: "Biaya total (A + B). Beban pokok di laba rugi." },
       { name: "D", about: "Keuntungan 10% × C, sebelum pajak." },
       { name: "E", about: "Biaya total & keuntungan (C + D). DPP, pendapatan." },

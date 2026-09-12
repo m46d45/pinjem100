@@ -24,7 +24,7 @@ export function PayPolicyPanel({ project }: { project: Project }) {
       </div>
 
       <p className="text-xs uppercase tracking-wider text-muted-foreground">
-        Komposisi beban
+        Komposisi biaya langsung (RAB A)
       </p>
       <Field label="Upah pekerja" value={`${Math.round(mix.labor * 100)}%`}>
         <Slider
@@ -45,7 +45,7 @@ export function PayPolicyPanel({ project }: { project: Project }) {
         />
       </Field>
       <Field
-        label="Alat & overhead"
+        label="Alat"
         value={`${Math.round(mix.equipment * 100)}%`}
       >
         <Slider

@@ -143,12 +143,15 @@ export function setCostShare(mix: CostMix, key: keyof CostMix, value: number): C
 }
 
 function activityWeight(project: Project, activity: Activity): number {
-  const total = directCost(project);
-  if (total <= 0) return 0;
-  const amount = project.rab
-    .filter((item) => item.activityId === activity.id)
-    .reduce((sum, item) => sum + item.amount, 0);
-  return amount / total;
+  let langsung = 0;
+  let amount = 0;
+  for (const item of project.rab) {
+    if (rabKind(item) !== "langsung") continue;
+    langsung += item.amount;
+    if (item.activityId === activity.id) amount += item.amount;
+  }
+  if (langsung <= 0) return 0;
+  return amount / langsung;
 }
 
 export function workShares(project: Project): number[] {
@@ -256,10 +259,11 @@ function projectFlows(project: Project, company: Company, horizon: number): Proj
   const start = project.startWeek;
   const duration = projectDuration(project);
   const shares = workShares(project);
-  const cost = directCost(project);
+  const roll = rabRollup(project, company.ppnRate);
+  const costA = roll.langsung;
+  const costB = roll.overhead;
   const terms = project.terms;
   const endWeek = start + duration;
-  const roll = rabRollup(project, company.ppnRate);
   const dppContract = roll.total;
   const grossContract = roll.kontrak;
   const mix = costMixOf(project);
@@ -307,18 +311,20 @@ function projectFlows(project: Project, company: Company, horizon: number): Proj
     const week = start + i;
     const share = shares[i] ?? 0;
     workCum += share;
-    const labor = cost * share * mix.labor;
-    const materialWork = cost * share * mix.material;
-    const equipment = cost * share * mix.equipment;
+    const labor = costA * share * mix.labor;
+    const materialWork = costA * share * mix.material;
+    const equipment = costA * share * mix.equipment;
+    const overhead = costB * share;
 
     if (week >= 0 && week < horizon) {
       work[week] = workCum;
       revenue[week] += dppContract * share;
-      expense[week] += labor + materialWork + equipment;
+      expense[week] += labor + materialWork + equipment + overhead;
     }
 
     addOut(week + pay.laborDelayWeeks, labor, laborOut);
     addOut(week + pay.equipmentDelayWeeks, equipment, otherOut);
+    addOut(week, overhead, otherOut);
 
     const purchaseWeek = week - company.materialLeadWeeks;
     const materialCashWeek = Math.max(start, purchaseWeek + pay.materialDelayWeeks);
