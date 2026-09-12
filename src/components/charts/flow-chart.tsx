@@ -11,7 +11,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { formatRpCompact, weekShort } from "@/lib/format";
+import { formatRpCompact, weekShort, weekTickInterval } from "@/lib/format";
 import { ClientChart } from "./client-chart";
 import { MoneyTick } from "./axis-tick";
 import { cn } from "@/lib/utils";
@@ -118,7 +118,7 @@ export function FlowChart({
               <XAxis
                 dataKey="label"
                 tick={{ fill: "var(--color-muted-foreground)", fontSize: 11 }}
-                interval={5}
+                interval={weekTickInterval(data.length)}
                 axisLine={false}
                 tickLine={false}
               />

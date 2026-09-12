@@ -73,6 +73,13 @@ export function weekShort(week: number): string {
   return `M${week + 1}`;
 }
 
+export function weekTickInterval(n: number): number {
+  if (n <= 14) return 0;
+  if (n <= 24) return 1;
+  if (n <= 36) return 2;
+  return 4;
+}
+
 export function monthLabel(week: number, fiscalYear: number): string {
   const d = weekToDate(week, fiscalYear);
   const year = d.getFullYear() === fiscalYear ? "" : ` ${d.getFullYear()}`;

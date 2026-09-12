@@ -38,6 +38,26 @@ export function projectDuration(project: Project): number {
   );
 }
 
+/** Weeks from first cash/kerja to last, plus a short pad — not the full fiscal year. */
+export function cropActiveWeeks(weeks: WeekPoint[], pad = 2): WeekPoint[] {
+  let first = -1;
+  let last = -1;
+  for (const w of weeks) {
+    const live =
+      Math.abs(w.cashIn) > 1 ||
+      Math.abs(w.cashOut) > 1 ||
+      Math.abs(w.revenue) > 1 ||
+      Math.abs(w.expense) > 1;
+    if (!live) continue;
+    if (first < 0) first = w.week;
+    last = w.week;
+  }
+  if (first < 0) return weeks.slice(0, Math.min(weeks.length, 24));
+  const from = Math.max(0, first - 1);
+  const to = Math.min(weeks.length - 1, last + pad);
+  return weeks.slice(from, to + 1);
+}
+
 export function dppOf(gross: number, ppnRate: number): number {
   return gross / (1 + ppnRate);
 }

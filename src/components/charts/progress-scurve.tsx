@@ -8,6 +8,7 @@ import {
   YAxis,
 } from "recharts";
 import type { Simulation } from "@/lib/cashflow/types";
+import { weekTickInterval } from "@/lib/format";
 import { ClientChart } from "./client-chart";
 
 export function ProgressScurve({
@@ -35,7 +36,7 @@ export function ProgressScurve({
               <XAxis
                 dataKey="label"
                 tick={{ fill: "var(--color-muted-foreground)", fontSize: 11 }}
-                interval={5}
+                interval={weekTickInterval(data.length)}
                 axisLine={false}
                 tickLine={false}
               />

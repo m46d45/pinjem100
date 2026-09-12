@@ -9,7 +9,7 @@ import { WeekSheet } from "@/components/ledger/week-sheet";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
-import { directCost, projectDuration } from "@/lib/cashflow/engine";
+import { cropActiveWeeks, directCost, projectDuration } from "@/lib/cashflow/engine";
 import { MARKET_LABEL } from "@/lib/cashflow/types";
 import {
   usePinjem,
@@ -37,8 +37,9 @@ function ProyekPage() {
 
   const cost = directCost(selected);
   const duration = projectDuration(selected);
+  const view = { ...sim, weeks: cropActiveWeeks(sim.weeks) };
 
-  const flowRows = sim.weeks.map((w) => ({
+  const flowRows = view.weeks.map((w) => ({
     week: w.week,
     earning: w.revenue,
     receipt: w.cashIn,
@@ -187,7 +188,7 @@ function ProyekPage() {
 
       <Card>
         <CardContent>
-          <ProgressScurve sim={sim} projectId={selected.id} />
+          <ProgressScurve sim={view} projectId={selected.id} />
         </CardContent>
       </Card>
 
@@ -205,7 +206,7 @@ function ProyekPage() {
 
       <Card>
         <CardContent>
-          <WeekSheet sim={sim} />
+          <WeekSheet sim={view} />
         </CardContent>
       </Card>
 
