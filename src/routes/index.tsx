@@ -17,7 +17,7 @@ const SPACES: { to: "/proyek" | "/portofolio" | "/keuangan"; name: string; about
   {
     to: "/keuangan",
     name: "Keuangan",
-    about: "Ekuitas, cadangan, utang, zona, rekap termyn.",
+    about: "Ekuitas dan utang perusahaan. Grafik bisa satu proyek atau portofolio.",
   },
 ];
 

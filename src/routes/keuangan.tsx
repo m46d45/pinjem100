@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import { LoanChart } from "@/components/charts/loan-chart";
 import { ReserveFlowChart } from "@/components/charts/reserve-flow-chart";
 import { FinancePanel } from "@/components/controls/finance-panel";
@@ -7,28 +8,110 @@ import { ExcelButton } from "@/components/ledger/excel-button";
 import { ZonePanel } from "@/components/meja/zone-panel";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatRatio } from "@/lib/cashflow/engine";
+import { MODE_LABEL } from "@/lib/cashflow/types";
 import { monthLabel, formatRp, formatRpCompact } from "@/lib/format";
 import type { Simulation } from "@/lib/cashflow/types";
-import { usePinjem, useSimulation } from "@/lib/cashflow/store";
+import {
+  usePinjem,
+  useProjectSimulation,
+  useProjects,
+  useSelectedProject,
+  useSimulation,
+} from "@/lib/cashflow/store";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/keuangan")({ component: KeuanganPage });
 
+type Scope = "portofolio" | "proyek";
+
 function KeuanganPage() {
-  const sim = useSimulation();
+  const [scope, setScope] = useState<Scope>("portofolio");
+  const portfolioSim = useSimulation();
+  const selected = useSelectedProject();
+  const projectSim = useProjectSimulation(selected);
+  const projects = useProjects();
+  const setSelected = usePinjem((s) => s.setSelected);
+  const mode = usePinjem((s) => s.mode);
   const year = usePinjem((s) => s.company.fiscalYear);
+
+  const sim = scope === "proyek" ? projectSim : portfolioSim;
   const months = summarizeMonths(sim, year);
+  const enabled = projects.filter((p) => p.enabled);
+  const scopeLabel =
+    scope === "proyek"
+      ? selected
+        ? `Satu proyek: ${selected.name}`
+        : "Satu proyek"
+      : `Portofolio · ${MODE_LABEL[mode]} · ${enabled.length} proyek`;
 
   return (
     <div className="flex flex-col gap-6">
       <header className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div className="flex flex-col gap-2">
           <p className="text-xs uppercase tracking-wider text-muted-foreground">
-            Utang, ekuitas, cadangan
+            Kebijakan perusahaan. Grafik mengikuti lingkup di bawah.
           </p>
           <h1 className="text-3xl font-semibold tracking-tight">Keuangan</h1>
+          <p className="max-w-xl text-sm text-muted-foreground">{scopeLabel}</p>
         </div>
-        <ExcelButton sim={sim} file="pinjem100-keuangan" />
+        <ExcelButton
+          sim={sim}
+          file={scope === "proyek" ? "pinjem100-keuangan-proyek" : "pinjem100-keuangan"}
+        />
       </header>
+
+      <div>
+        <p className="mb-2 text-xs uppercase tracking-wider text-muted-foreground">Lingkup grafik</p>
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={() => setScope("portofolio")}
+            className={cn(
+              "min-h-11 rounded-lg px-3 py-2 text-sm",
+              scope === "portofolio"
+                ? "bg-primary text-primary-foreground"
+                : "bg-secondary text-secondary-foreground",
+            )}
+          >
+            Portofolio
+          </button>
+          <button
+            type="button"
+            onClick={() => setScope("proyek")}
+            className={cn(
+              "min-h-11 rounded-lg px-3 py-2 text-sm",
+              scope === "proyek"
+                ? "bg-primary text-primary-foreground"
+                : "bg-secondary text-secondary-foreground",
+            )}
+          >
+            Satu proyek
+          </button>
+        </div>
+        {scope === "proyek" ? (
+          <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
+            {projects.map((p) => (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => setSelected(p.id)}
+                className={cn(
+                  "min-h-11 shrink-0 rounded-lg px-3 text-sm",
+                  p.id === selected?.id
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-secondary text-secondary-foreground",
+                )}
+              >
+                {p.name}
+              </button>
+            ))}
+          </div>
+        ) : (
+          <p className="mt-2 text-xs text-muted-foreground">
+            {enabled.map((p) => p.name).join(" · ") || "Tidak ada proyek nyala"}
+          </p>
+        )}
+      </div>
 
       <div className="grid gap-4 lg:grid-cols-5">
         <Card className="lg:col-span-2">
