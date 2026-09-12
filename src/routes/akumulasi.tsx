@@ -23,24 +23,23 @@ function AkumulasiPage() {
       </header>
 
       <Card>
+        <CardContent>
+          <PresetBar />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent>
+          <ScurveChart sim={sim} />
+        </CardContent>
+      </Card>
+
+      <Card>
         <CardContent className="flex flex-col gap-6">
           <ZonePanel sim={sim} />
           <CashPositionChart sim={sim} />
         </CardContent>
       </Card>
-
-      <div className="grid gap-4 lg:grid-cols-5">
-        <Card className="lg:col-span-2">
-          <CardContent className="flex flex-col gap-5">
-            <PresetBar />
-          </CardContent>
-        </Card>
-        <Card className="lg:col-span-3">
-          <CardContent>
-            <ScurveChart sim={sim} />
-          </CardContent>
-        </Card>
-      </div>
 
       <section className="grid gap-3 sm:grid-cols-3">
         <Stat label="Kas kumulatif terdalam" value={formatRpCompact(sim.minAccum)} />

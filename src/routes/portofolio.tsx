@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { FlowChart, FlowLegend } from "@/components/charts/flow-chart";
+import { ScurveChart } from "@/components/charts/scurve-chart";
 import { PresetBar } from "@/components/controls/preset-bar";
 import { PortfolioGantt } from "@/components/gantt/gantt-chart";
 import { ProjectCard } from "@/components/portfolio/project-card";
@@ -62,6 +63,12 @@ function PortofolioPage() {
       <Card>
         <CardContent>
           <PortfolioGantt projects={projects} />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent>
+          <ScurveChart sim={sim} />
         </CardContent>
       </Card>
 

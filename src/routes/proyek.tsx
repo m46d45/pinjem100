@@ -9,7 +9,7 @@ import { WeekSheet } from "@/components/ledger/week-sheet";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
-import { dppOf, directCost, projectDuration } from "@/lib/cashflow/engine";
+import { directCost, projectDuration } from "@/lib/cashflow/engine";
 import { MARKET_LABEL } from "@/lib/cashflow/types";
 import {
   usePinjem,
@@ -37,7 +37,6 @@ function ProyekPage() {
 
   const cost = directCost(selected);
   const duration = projectDuration(selected);
-  const dpp = dppOf(selected.contractValue, company.ppnRate);
 
   const flowRows = sim.weeks.map((w) => ({
     week: w.week,
@@ -76,26 +75,18 @@ function ProyekPage() {
         ))}
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        <Card className="lg:col-span-2">
-          <CardContent className="flex flex-col gap-6">
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Setting kontrak</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-4">
             <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
               <Meta label="Owner" value={selected.owner} />
               <Meta label="Pasar" value={MARKET_LABEL[selected.market]} />
               <Meta label="Kontrak termasuk PPN" value={formatRpCompact(selected.contractValue)} />
-              <Meta label="Revenue / DPP" value={formatRpCompact(dpp)} />
-              <Meta label="Cost of sales" value={formatRpCompact(cost)} />
-              <Meta label="Gross profit" value={formatRpCompact(dpp - cost)} />
               <Meta label="Durasi" value={`${duration} minggu`} />
             </div>
-            <ProjectGantt project={selected} />
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Kontrak (owner yang bayar)</CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-4">
             <Field label="Mulai" value={weekLabel(selected.startWeek, company.fiscalYear)}>
               <Slider
                 min={0}
@@ -141,31 +132,12 @@ function ProyekPage() {
             ) : null}
           </CardContent>
         </Card>
+        <Card>
+          <CardContent>
+            <PayPolicyPanel project={selected} />
+          </CardContent>
+        </Card>
       </div>
-
-      <Card>
-        <CardContent>
-          <PayPolicyPanel project={selected} />
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardContent className="flex flex-col gap-3">
-          <FlowLegend />
-          <FlowChart
-            rows={flowRows}
-            title="Masuk dan keluar"
-            height={280}
-            showClue
-          />
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardContent>
-          <IncomeStatementTable income={sim.income} ratios={sim.ratios} />
-        </CardContent>
-      </Card>
 
       <Card>
         <CardHeader>
@@ -208,9 +180,38 @@ function ProyekPage() {
       </Card>
 
       <Card>
-        <CardContent className="flex flex-col gap-8">
+        <CardContent>
+          <ProjectGantt project={selected} />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent>
           <ProgressScurve sim={sim} projectId={selected.id} />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent className="flex flex-col gap-3">
+          <FlowLegend />
+          <FlowChart
+            rows={flowRows}
+            title="Masuk dan keluar"
+            height={280}
+            showClue
+          />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent>
           <WeekSheet sim={sim} />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent>
+          <IncomeStatementTable income={sim.income} ratios={sim.ratios} />
         </CardContent>
       </Card>
     </div>

@@ -7,22 +7,22 @@ const SPACES: { to: "/proyek" | "/portofolio" | "/akumulasi" | "/pinjam"; name: 
   {
     to: "/proyek",
     name: "Proyek",
-    about: "Satu kontrak: RAB, Gantt, bayar tukang/toko/alat, grafik, laba rugi, spreadsheet.",
+    about: "Satu kontrak: setting, RAB, Gantt, kurva S, kas, laba rugi.",
   },
   {
     to: "/portofolio",
     name: "Portofolio",
-    about: "Tiga proyek dalam satu tahun anggaran.",
+    about: "Tiga proyek: setting jadwal, Gantt, kurva S, kas gabungan.",
   },
   {
     to: "/akumulasi",
     name: "Akumulasi",
-    about: "Kas perusahaan, minggu ke minggu.",
+    about: "Kas perusahaan, kurva S, lalu laba rugi.",
   },
   {
     to: "/pinjam",
     name: "Pinjam",
-    about: "Ekuitas, fasilitas utang, pencairan, termyn.",
+    about: "Setting ekuitas dan utang, grafik pinjaman, rekap termyn.",
   },
 ];
 
