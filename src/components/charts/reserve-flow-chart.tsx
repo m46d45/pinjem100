@@ -12,6 +12,7 @@ import {
 import { formatRpCompact } from "@/lib/format";
 import type { Simulation } from "@/lib/cashflow/types";
 import { ClientChart } from "./client-chart";
+import { chartBrush, ChartCaption } from "./chart-tools";
 import { MoneyTick } from "./axis-tick";
 
 export function ReserveFlowChart({ sim }: { sim: Simulation }) {
@@ -24,9 +25,9 @@ export function ReserveFlowChart({ sim }: { sim: Simulation }) {
 
   return (
     <figure className="flex flex-col gap-3">
-      <figcaption className="text-base font-medium tracking-tight">
+      <ChartCaption file="pinjem100-cadangan" className="text-base">
         Keluar ke cadangan, cair dari cadangan
-      </figcaption>
+      </ChartCaption>
       <ul className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
         <li className="inline-flex items-center gap-1.5">
           <span className="inline-block size-2.5 rounded-sm bg-out" />
@@ -81,6 +82,7 @@ export function ReserveFlowChart({ sim }: { sim: Simulation }) {
                 dot={false}
                 strokeWidth={1.8}
               />
+              {chartBrush()}
             </ComposedChart>
           </ResponsiveContainer>
         </div>

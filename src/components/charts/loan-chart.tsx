@@ -11,6 +11,7 @@ import {
 import { formatRpCompact } from "@/lib/format";
 import type { Simulation } from "@/lib/cashflow/types";
 import { ClientChart } from "./client-chart";
+import { chartBrush, ChartCaption } from "./chart-tools";
 import { MoneyTick } from "./axis-tick";
 
 export function LoanChart({ sim }: { sim: Simulation }) {
@@ -22,9 +23,9 @@ export function LoanChart({ sim }: { sim: Simulation }) {
 
   return (
     <figure className="flex flex-col gap-3">
-      <figcaption className="text-base font-medium tracking-tight">
+      <ChartCaption file="pinjem100-utang" className="text-base">
         Utang terpakai vs fasilitas
-      </figcaption>
+      </ChartCaption>
       <ClientChart>
         <div className="h-[260px] w-full sm:h-[300px]">
           <ResponsiveContainer width="100%" height="100%">
@@ -64,6 +65,7 @@ export function LoanChart({ sim }: { sim: Simulation }) {
                 fillOpacity={0.18}
                 strokeWidth={2}
               />
+              {chartBrush()}
             </AreaChart>
           </ResponsiveContainer>
         </div>

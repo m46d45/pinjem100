@@ -13,6 +13,7 @@ import {
 } from "recharts";
 import { formatRpCompact, weekShort, weekTickInterval } from "@/lib/format";
 import { ClientChart } from "./client-chart";
+import { chartBrush, ChartCaption } from "./chart-tools";
 import { MoneyTick } from "./axis-tick";
 import { cn } from "@/lib/utils";
 
@@ -109,7 +110,9 @@ export function FlowChart({
 
   return (
     <figure className="flex flex-col gap-2">
-      <figcaption className="text-sm font-medium tracking-tight">{title}</figcaption>
+      <ChartCaption file={`pinjem100-${title.toLowerCase().replace(/\s+/g, "-")}`}>
+        {title}
+      </ChartCaption>
       <ClientChart height={height}>
         <div className="w-full" style={{ height }}>
           <ResponsiveContainer width="100%" height="100%">
@@ -227,6 +230,7 @@ export function FlowChart({
                   />
                 </>
               ) : null}
+              {chartBrush()}
             </ComposedChart>
           </ResponsiveContainer>
         </div>

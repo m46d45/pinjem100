@@ -10,6 +10,7 @@ import {
 import { formatRpCompact } from "@/lib/format";
 import type { Simulation } from "@/lib/cashflow/types";
 import { ClientChart } from "./client-chart";
+import { chartBrush, ChartCaption } from "./chart-tools";
 import { MoneyTick } from "./axis-tick";
 
 export function ScurveChart({ sim }: { sim: Simulation }) {
@@ -21,9 +22,9 @@ export function ScurveChart({ sim }: { sim: Simulation }) {
 
   return (
     <figure className="flex flex-col gap-3">
-      <figcaption className="font-display text-base tracking-tight">
+      <ChartCaption file="pinjem100-kurva-s" className="font-display text-base">
         Kurva S kas — kumulatif masuk vs keluar
-      </figcaption>
+      </ChartCaption>
       <ClientChart>
         <div className="h-[260px] w-full sm:h-[300px]">
           <ResponsiveContainer width="100%" height="100%">
@@ -65,6 +66,7 @@ export function ScurveChart({ sim }: { sim: Simulation }) {
                 strokeWidth={2}
                 dot={false}
               />
+              {chartBrush()}
             </LineChart>
           </ResponsiveContainer>
         </div>

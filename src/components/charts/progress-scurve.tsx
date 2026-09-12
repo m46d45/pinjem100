@@ -10,6 +10,7 @@ import {
 import type { Simulation } from "@/lib/cashflow/types";
 import { weekTickInterval } from "@/lib/format";
 import { ClientChart } from "./client-chart";
+import { chartBrush, ChartCaption } from "./chart-tools";
 
 export function ProgressScurve({
   sim,
@@ -25,9 +26,9 @@ export function ProgressScurve({
 
   return (
     <figure className="flex flex-col gap-3">
-      <figcaption className="font-display text-base tracking-tight">
+      <ChartCaption file="pinjem100-kurva-s-kerja" className="font-display text-base">
         Kurva S progres kerja
-      </figcaption>
+      </ChartCaption>
       <ClientChart>
         <div className="h-[220px] w-full">
           <ResponsiveContainer width="100%" height="100%">
@@ -64,6 +65,7 @@ export function ProgressScurve({
                 strokeWidth={2}
                 dot={false}
               />
+              {chartBrush()}
             </LineChart>
           </ResponsiveContainer>
         </div>
