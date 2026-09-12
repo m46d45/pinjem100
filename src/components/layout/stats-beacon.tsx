@@ -18,8 +18,8 @@ export function StatsBeacon() {
     bumpView();
     void recordLabEvent({ data: { kind: "view", path: pathname } }).catch(() => undefined);
     if (pathname === "/proyek") markJournal({ openedProyek: true });
-    if (pathname === "/portofolio") markJournal({ openedPortofolio: true });
-    if (pathname === "/akumulasi") markJournal({ openedAkumulasi: true });
+    if (pathname === "/portofolio") markJournal({ openedPortofolio: true, openedAkumulasi: true });
+    if (pathname === "/keuangan") markJournal({ openedAkumulasi: true });
   }, [pathname, markJournal, bumpView]);
 
   useEffect(() => {

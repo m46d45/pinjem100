@@ -1,13 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { CashPositionChart } from "@/components/charts/cash-position-chart";
 import { FlowChart, FlowLegend } from "@/components/charts/flow-chart";
 import { ScurveChart } from "@/components/charts/scurve-chart";
 import { PresetBar } from "@/components/controls/preset-bar";
 import { PortfolioGantt } from "@/components/gantt/gantt-chart";
+import { IncomeStatementTable } from "@/components/ledger/income-statement";
 import { ProjectCard } from "@/components/portfolio/project-card";
 import { ExcelButton } from "@/components/ledger/excel-button";
+import { ZonePanel } from "@/components/meja/zone-panel";
 import { Card, CardContent } from "@/components/ui/card";
 import { MODE_LABEL, MARKET_BLURB } from "@/lib/cashflow/types";
 import { usePinjem, useProjects, useSimulation } from "@/lib/cashflow/store";
+import { formatRpCompact } from "@/lib/format";
 
 export const Route = createFileRoute("/portofolio")({ component: PortofolioPage });
 
@@ -16,6 +20,7 @@ function PortofolioPage() {
   const projects = useProjects();
   const mode = usePinjem((s) => s.mode);
   const year = usePinjem((s) => s.company.fiscalYear);
+  const ppnRate = usePinjem((s) => s.company.ppnRate);
   const enabled = projects.filter((p) => p.enabled);
 
   const yMax = Math.max(
@@ -119,6 +124,35 @@ function PortofolioPage() {
           </CardContent>
         </Card>
       </div>
+
+      <Card>
+        <CardContent className="flex flex-col gap-6">
+          <ZonePanel sim={sim} />
+          <CashPositionChart sim={sim} />
+        </CardContent>
+      </Card>
+
+      <section className="grid gap-3 sm:grid-cols-3">
+        <Stat label="Kas kumulatif terdalam" value={formatRpCompact(sim.minAccum)} />
+        <Stat label="Puncak utang terpakai" value={formatRpCompact(sim.peakLoan)} />
+        <Stat label="Kas di tangan terendah" value={formatRpCompact(sim.minCash)} />
+        <Stat label="Net profit (Laba bersih)" value={formatRpCompact(sim.income.netProfit)} />
+      </section>
+
+      <Card>
+        <CardContent>
+          <IncomeStatementTable income={sim.income} ratios={sim.ratios} ppnRate={ppnRate} />
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+function Stat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-xl bg-card p-4 shadow-[var(--shadow-border)]">
+      <p className="text-xs text-muted-foreground">{label}</p>
+      <p className="mt-1 text-2xl font-medium tabular-nums tracking-tight">{value}</p>
     </div>
   );
 }

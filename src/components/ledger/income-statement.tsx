@@ -63,7 +63,7 @@ export function IncomeStatementTable({
           <HeadRow label="Pendapatan lain" />
           <Line
             label="Other income (Hasil cadangan)"
-            formula="Hasil investasi di luar proyek  ·  tab Pinjam"
+            formula="Hasil investasi di luar proyek  ·  tab Keuangan"
             value={income.otherIncome}
           />
           <Line
@@ -76,7 +76,7 @@ export function IncomeStatementTable({
           <HeadRow label="Beban keuangan dan pajak" />
           <Line
             label="Interest (Beban bunga)"
-            formula="Utang × 12% per tahun, dihitung mingguan  ·  tab Pinjam"
+            formula="Utang × 12% per tahun, dihitung mingguan  ·  tab Keuangan"
             value={income.interest}
           />
           <Line

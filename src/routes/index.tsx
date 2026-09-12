@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export const Route = createFileRoute("/")({ component: PanduanPage });
 
-const SPACES: { to: "/proyek" | "/portofolio" | "/akumulasi" | "/pinjam"; name: string; about: string }[] = [
+const SPACES: { to: "/proyek" | "/portofolio" | "/keuangan"; name: string; about: string }[] = [
   {
     to: "/proyek",
     name: "Proyek",
@@ -12,16 +12,11 @@ const SPACES: { to: "/proyek" | "/portofolio" | "/akumulasi" | "/pinjam"; name: 
   {
     to: "/portofolio",
     name: "Portofolio",
-    about: "Tiga proyek: setting jadwal, Gantt, kurva S, kas gabungan.",
+    about: "Tiga proyek, kas gabungan, posisi kas perusahaan, laba rugi.",
   },
   {
-    to: "/akumulasi",
-    name: "Akumulasi",
-    about: "Kas perusahaan, kurva S, lalu laba rugi.",
-  },
-  {
-    to: "/pinjam",
-    name: "Pinjam",
+    to: "/keuangan",
+    name: "Keuangan",
     about: "Ekuitas, cadangan, utang, grafik pinjaman, rekap termyn.",
   },
 ];
@@ -65,7 +60,7 @@ function PanduanPage() {
 
       <Card>
         <CardContent className="flex flex-col gap-4">
-          <h2 className="text-lg font-medium">Empat ruang kerja</h2>
+          <h2 className="text-lg font-medium">Tiga ruang kerja</h2>
           <ul className="flex flex-col gap-3 text-sm">
             {SPACES.map((tab) => (
               <li key={tab.name}>

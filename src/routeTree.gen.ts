@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AkumulasiRouteImport } from './routes/akumulasi'
+import { Route as KeuanganRouteImport } from './routes/keuangan'
 import { Route as PinjamRouteImport } from './routes/pinjam'
 import { Route as PortofolioRouteImport } from './routes/portofolio'
 import { Route as ProyekRouteImport } from './routes/proyek'
@@ -24,6 +25,11 @@ const IndexRoute = IndexRouteImport.update({
 const AkumulasiRoute = AkumulasiRouteImport.update({
   id: '/akumulasi',
   path: '/akumulasi',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KeuanganRoute = KeuanganRouteImport.update({
+  id: '/keuangan',
+  path: '/keuangan',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PinjamRoute = PinjamRouteImport.update({
@@ -50,6 +56,7 @@ const RekapRoute = RekapRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/akumulasi': typeof AkumulasiRoute
+  '/keuangan': typeof KeuanganRoute
   '/pinjam': typeof PinjamRoute
   '/portofolio': typeof PortofolioRoute
   '/proyek': typeof ProyekRoute
@@ -58,6 +65,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/akumulasi': typeof AkumulasiRoute
+  '/keuangan': typeof KeuanganRoute
   '/pinjam': typeof PinjamRoute
   '/portofolio': typeof PortofolioRoute
   '/proyek': typeof ProyekRoute
@@ -67,6 +75,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/akumulasi': typeof AkumulasiRoute
+  '/keuangan': typeof KeuanganRoute
   '/pinjam': typeof PinjamRoute
   '/portofolio': typeof PortofolioRoute
   '/proyek': typeof ProyekRoute
@@ -75,13 +84,27 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/akumulasi' | '/pinjam' | '/portofolio' | '/proyek' | '/rekap'
+    | '/'
+    | '/akumulasi'
+    | '/keuangan'
+    | '/pinjam'
+    | '/portofolio'
+    | '/proyek'
+    | '/rekap'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/akumulasi' | '/pinjam' | '/portofolio' | '/proyek' | '/rekap'
+  to:
+    | '/'
+    | '/akumulasi'
+    | '/keuangan'
+    | '/pinjam'
+    | '/portofolio'
+    | '/proyek'
+    | '/rekap'
   id:
     | '__root__'
     | '/'
     | '/akumulasi'
+    | '/keuangan'
     | '/pinjam'
     | '/portofolio'
     | '/proyek'
@@ -91,6 +114,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AkumulasiRoute: typeof AkumulasiRoute
+  KeuanganRoute: typeof KeuanganRoute
   PinjamRoute: typeof PinjamRoute
   PortofolioRoute: typeof PortofolioRoute
   ProyekRoute: typeof ProyekRoute
@@ -111,6 +135,13 @@ declare module '@tanstack/react-router' {
       path: '/akumulasi'
       fullPath: '/akumulasi'
       preLoaderRoute: typeof AkumulasiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/keuangan': {
+      id: '/keuangan'
+      path: '/keuangan'
+      fullPath: '/keuangan'
+      preLoaderRoute: typeof KeuanganRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pinjam': {
@@ -147,6 +178,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AkumulasiRoute: AkumulasiRoute,
+  KeuanganRoute: KeuanganRoute,
   PinjamRoute: PinjamRoute,
   PortofolioRoute: PortofolioRoute,
   ProyekRoute: ProyekRoute,

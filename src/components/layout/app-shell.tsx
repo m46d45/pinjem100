@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { BookOpen, ClipboardList, Layers, LineChart, ScrollText } from "lucide-react";
+import { ClipboardList, Landmark, Layers, ScrollText } from "lucide-react";
 import { type ReactNode, useEffect, useState } from "react";
 import { LogoMark } from "@/components/layout/logo-mark";
 import { cn } from "@/lib/utils";
@@ -7,8 +7,7 @@ import { cn } from "@/lib/utils";
 const NAV = [
   { to: "/proyek", label: "Proyek", icon: ClipboardList },
   { to: "/portofolio", label: "Portofolio", icon: Layers },
-  { to: "/akumulasi", label: "Akumulasi", icon: LineChart },
-  { to: "/pinjam", label: "Pinjam", icon: BookOpen },
+  { to: "/keuangan", label: "Keuangan", icon: Landmark },
 ] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {
@@ -84,7 +83,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-5 pb-24 md:pb-8">{children}</main>
 
       <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-sm md:hidden">
-        <ul className="grid grid-cols-4">
+        <ul className="grid grid-cols-3">
           {NAV.map((item) => {
             const active = pathname === item.to;
             const Icon = item.icon;

@@ -1,5 +1,5 @@
-const CACHE = "pinjem100-v3";
-const PRECACHE = ["/", "/proyek", "/portofolio", "/akumulasi", "/pinjam", "/favicon.svg"];
+const CACHE = "pinjem100-v4";
+const PRECACHE = ["/", "/proyek", "/portofolio", "/keuangan", "/favicon.svg"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(

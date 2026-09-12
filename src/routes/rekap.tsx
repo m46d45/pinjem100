@@ -30,7 +30,7 @@ function RekapPage() {
         <CardContent className="flex flex-col gap-2 text-sm">
           <p>
             Proyek: {journal.openedProyek ? "dibuka" : "belum"}. Portofolio:{" "}
-            {journal.openedPortofolio ? "dibuka" : "belum"}. Akumulasi:{" "}
+            {journal.openedPortofolio ? "dibuka" : "belum"}. Keuangan:{" "}
             {journal.openedAkumulasi ? "dibuka" : "belum"}.
           </p>
           <p>
