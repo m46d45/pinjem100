@@ -5,6 +5,7 @@ import { ScurveChart } from "@/components/charts/scurve-chart";
 import { PresetBar } from "@/components/controls/preset-bar";
 import { ZonePanel } from "@/components/meja/zone-panel";
 import { IncomeStatementTable } from "@/components/ledger/income-statement";
+import { ExcelButton } from "@/components/ledger/excel-button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useSimulation } from "@/lib/cashflow/store";
 import { formatRpCompact } from "@/lib/format";
@@ -16,11 +17,14 @@ function AkumulasiPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <header className="flex flex-col gap-2">
-        <p className="text-xs uppercase tracking-wider text-muted-foreground">
-          Kas perusahaan
-        </p>
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Akumulasi kas</h1>
+      <header className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex flex-col gap-2">
+          <p className="text-xs uppercase tracking-wider text-muted-foreground">
+            Kas perusahaan
+          </p>
+          <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Akumulasi kas</h1>
+        </div>
+        <ExcelButton sim={sim} file="pinjem100-akumulasi" />
       </header>
 
       <Card>

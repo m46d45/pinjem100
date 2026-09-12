@@ -4,6 +4,7 @@ import { ScurveChart } from "@/components/charts/scurve-chart";
 import { PresetBar } from "@/components/controls/preset-bar";
 import { PortfolioGantt } from "@/components/gantt/gantt-chart";
 import { ProjectCard } from "@/components/portfolio/project-card";
+import { ExcelButton } from "@/components/ledger/excel-button";
 import { Card, CardContent } from "@/components/ui/card";
 import { MODE_LABEL, MARKET_BLURB } from "@/lib/cashflow/types";
 import { usePinjem, useProjects, useSimulation } from "@/lib/cashflow/store";
@@ -30,11 +31,14 @@ function PortofolioPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <header className="flex flex-col gap-2">
-        <p className="text-xs uppercase tracking-wider text-muted-foreground">
-          Tiga proyek, satu tahun anggaran {year}
-        </p>
-        <h1 className="text-3xl font-semibold tracking-tight">{MODE_LABEL[mode]}</h1>
+      <header className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex flex-col gap-2">
+          <p className="text-xs uppercase tracking-wider text-muted-foreground">
+            Tiga proyek, satu tahun anggaran {year}
+          </p>
+          <h1 className="text-3xl font-semibold tracking-tight">{MODE_LABEL[mode]}</h1>
+        </div>
+        <ExcelButton sim={sim} file="pinjem100-portofolio" />
       </header>
 
       <Card>

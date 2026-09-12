@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ExcelButton } from "@/components/ledger/excel-button";
 import type { Simulation, WeekPoint } from "@/lib/cashflow/types";
 import { formatRp } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -23,8 +24,9 @@ export function WeekSheet({ sim }: { sim: Simulation }) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div>
+      <div className="flex items-center justify-between gap-3">
         <h3 className="text-base font-medium tracking-tight">Spreadsheet kas</h3>
+        <ExcelButton sim={sim} file="pinjem100-proyek" />
       </div>
       <div className="rounded-lg bg-muted/60 p-3 font-mono text-[11px] leading-relaxed text-muted-foreground">
         <p>Pendapatan t = DPP × (S(t) − S(t−1))</p>

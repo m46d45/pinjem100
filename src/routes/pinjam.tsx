@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { LoanChart } from "@/components/charts/loan-chart";
 import { FinancePanel } from "@/components/controls/finance-panel";
 import { ReservePanel } from "@/components/controls/reserve-panel";
+import { ExcelButton } from "@/components/ledger/excel-button";
 import { ZonePanel } from "@/components/meja/zone-panel";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatRatio } from "@/lib/cashflow/engine";
@@ -18,11 +19,14 @@ function PinjamPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <header className="flex flex-col gap-2">
-        <p className="text-xs uppercase tracking-wider text-muted-foreground">
-          Utang, ekuitas, cadangan
-        </p>
-        <h1 className="text-3xl font-semibold tracking-tight">Pinjam</h1>
+      <header className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex flex-col gap-2">
+          <p className="text-xs uppercase tracking-wider text-muted-foreground">
+            Utang, ekuitas, cadangan
+          </p>
+          <h1 className="text-3xl font-semibold tracking-tight">Pinjam</h1>
+        </div>
+        <ExcelButton sim={sim} file="pinjem100-pinjam" />
       </header>
 
       <div className="grid gap-4 lg:grid-cols-5">
