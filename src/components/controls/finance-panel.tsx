@@ -44,13 +44,28 @@ export function FinancePanel() {
       </Field>
       <p className="text-xs text-muted-foreground">Skala sama: 0–300 juta.</p>
 
+      <Field
+        label="Keuntungan RAB D"
+        value={`${Math.round((company.profitRate ?? 0.1) * 100)}% × C`}
+      >
+        <Slider
+          min={0}
+          max={25}
+          step={1}
+          value={[Math.round((company.profitRate ?? 0.1) * 100)]}
+          onValueChange={(v) => patch({ profitRate: (v[0] ?? 10) / 100 })}
+          aria-label="Persen keuntungan RAB"
+        />
+      </Field>
+
       <div>
         <p className="mb-2 text-xs uppercase tracking-wider text-muted-foreground">Sumber</p>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-2" role="group" aria-label="Sumber fasilitas">
           {( ["bank", "rekan"] as Lender[]).map((l) => (
             <button
               key={l}
               type="button"
+              aria-pressed={company.lender === l}
               className={cn(
                 "min-h-11 rounded-lg px-3 text-sm",
                 company.lender === l
@@ -90,11 +105,12 @@ export function FinancePanel() {
 
       <div>
         <p className="mb-2 text-xs uppercase tracking-wider text-muted-foreground">Skema</p>
-        <div className="grid gap-2">
+        <div className="grid gap-2" role="group" aria-label="Skema utang">
           {( ["revolving", "term"] as DebtScheme[]).map((s) => (
             <button
               key={s}
               type="button"
+              aria-pressed={company.debtScheme === s}
               className={cn(
                 "min-h-11 rounded-lg px-3 text-left text-sm",
                 company.debtScheme === s

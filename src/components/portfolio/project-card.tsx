@@ -10,12 +10,13 @@ import { usePinjem } from "@/lib/cashflow/store";
 export function ProjectCard({ project }: { project: Project }) {
   const year = usePinjem((s) => s.company.fiscalYear);
   const ppnRate = usePinjem((s) => s.company.ppnRate);
+  const profitRate = usePinjem((s) => s.company.profitRate);
   const setStartWeek = usePinjem((s) => s.setStartWeek);
   const setEnabled = usePinjem((s) => s.setEnabled);
   const setSelected = usePinjem((s) => s.setSelected);
   const selectedId = usePinjem((s) => s.selectedId);
   const duration = projectDuration(project);
-  const roll = rabRollup(project, ppnRate);
+  const roll = rabRollup(project, ppnRate, profitRate);
 
   return (
     <article
@@ -26,6 +27,8 @@ export function ProjectCard({ project }: { project: Project }) {
           type="button"
           className="min-w-0 text-left"
           onClick={() => setSelected(project.id)}
+          aria-pressed={selectedId === project.id}
+          aria-label={`Pilih ${project.name}`}
         >
           <p className="truncate font-medium">{project.name}</p>
           <p className="truncate text-xs text-muted-foreground">{project.owner}</p>
@@ -56,8 +59,8 @@ export function ProjectCard({ project }: { project: Project }) {
         />
       </div>
       <p className="mt-1 text-xs text-muted-foreground">
-        Biaya {formatRpCompact(roll.pokok)} · keuntungan 10% · tempo bahan{" "}
-        {payPolicyOf(project).materialDelayWeeks} minggu
+        Biaya {formatRpCompact(roll.pokok)} · keuntungan {Math.round(roll.profitRate * 100)}% ·
+        tempo bahan {payPolicyOf(project).materialDelayWeeks} minggu
       </p>
     </article>
   );

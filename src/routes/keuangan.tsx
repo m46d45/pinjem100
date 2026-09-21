@@ -64,7 +64,7 @@ function KeuanganPage() {
 
       <div>
         <p className="mb-2 text-xs uppercase tracking-wider text-muted-foreground">Lingkup grafik</p>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-2" role="group" aria-label="Lingkup grafik">
           <button
             type="button"
             onClick={() => {
@@ -74,6 +74,7 @@ function KeuanganPage() {
               if (house) setSelected(house.id);
               setScope("proyek");
             }}
+            aria-pressed={scope === "proyek"}
             className={cn(
               "min-h-11 rounded-lg px-3 py-2 text-sm",
               scope === "proyek"
@@ -86,6 +87,7 @@ function KeuanganPage() {
           <button
             type="button"
             onClick={() => setScope("portofolio")}
+            aria-pressed={scope === "portofolio"}
             className={cn(
               "min-h-11 rounded-lg px-3 py-2 text-sm",
               scope === "portofolio"
@@ -97,12 +99,14 @@ function KeuanganPage() {
           </button>
         </div>
         {scope === "proyek" ? (
-          <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
+          <div className="mt-2 flex gap-2 overflow-x-auto pb-1" role="group" aria-label="Pilih proyek">
             {projects.map((p) => (
               <button
                 key={p.id}
                 type="button"
                 onClick={() => setSelected(p.id)}
+                aria-pressed={p.id === selected?.id}
+                aria-label={`Pilih ${p.name}`}
                 className={cn(
                   "min-h-11 shrink-0 rounded-lg px-3 text-sm",
                   p.id === selected?.id
@@ -117,12 +121,13 @@ function KeuanganPage() {
         ) : (
           <div className="mt-3 flex flex-col gap-2">
             <p className="text-xs uppercase tracking-wider text-muted-foreground">Jenis portofolio</p>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-2" role="group" aria-label="Jenis portofolio">
               {(["satu-pasar", "berbagai-pasar"] as const).map((m) => (
                 <button
                   key={m}
                   type="button"
                   onClick={() => setMode(m)}
+                  aria-pressed={mode === m}
                   className={cn(
                     "min-h-11 rounded-lg px-3 py-2 text-sm",
                     mode === m
