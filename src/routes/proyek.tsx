@@ -38,7 +38,7 @@ function ProyekPage() {
 
   const duration = projectDuration(selected);
   const work = projectWorkWindow(selected);
-  const roll = rabRollup(selected, company.ppnRate);
+  const roll = rabRollup(selected, company.ppnRate, company.profitRate);
   const view = { ...sim, weeks: cropActiveWeeks(sim.weeks) };
 
   const flowRows = view.weeks.map((w) => ({
@@ -58,6 +58,23 @@ function ProyekPage() {
         </p>
         <h1 className="text-3xl font-semibold tracking-tight">{selected.name}</h1>
         <p className="max-w-2xl text-sm text-muted-foreground">{selected.notes}</p>
+        <nav
+          aria-label="Bagian halaman"
+          className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground"
+        >
+          {[
+            ["setting", "Setting"],
+            ["rab", "RAB"],
+            ["gantt", "Gantt"],
+            ["kurva", "Kurva S"],
+            ["kas", "Kas"],
+            ["laba", "Laba rugi"],
+          ].map(([id, label]) => (
+            <a key={id} href={`#${id}`} className="text-primary hover:underline">
+              {label}
+            </a>
+          ))}
+        </nav>
       </header>
 
       <div className="flex gap-2 overflow-x-auto pb-1">
@@ -66,6 +83,8 @@ function ProyekPage() {
             key={p.id}
             type="button"
             onClick={() => setSelected(p.id)}
+            aria-pressed={p.id === selected.id}
+            aria-label={`Pilih proyek ${p.name}`}
             className={cn(
               "min-h-11 shrink-0 rounded-lg px-3 text-sm",
               p.id === selected.id
@@ -78,7 +97,7 @@ function ProyekPage() {
         ))}
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div id="setting" className="grid scroll-mt-24 gap-4 lg:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle>Setting kontrak</CardTitle>
@@ -142,19 +161,23 @@ function ProyekPage() {
         </Card>
       </div>
 
-      <Card className="overflow-hidden">
+      <Card id="rab" className="scroll-mt-24 overflow-hidden">
         <CardContent className="p-0">
-          <RabTable project={selected} ppnRate={company.ppnRate} />
+          <RabTable
+            project={selected}
+            ppnRate={company.ppnRate}
+            profitRate={company.profitRate}
+          />
         </CardContent>
       </Card>
 
-      <Card>
+      <Card id="gantt" className="scroll-mt-24">
         <CardContent>
           <ProjectGantt project={selected} />
         </CardContent>
       </Card>
 
-      <Card>
+      <Card id="kurva" className="scroll-mt-24">
         <CardContent>
           <ProgressScurve
             sim={sim}
@@ -165,7 +188,7 @@ function ProyekPage() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card id="kas" className="scroll-mt-24">
         <CardContent className="flex flex-col gap-3">
           <FlowLegend />
           <FlowChart
@@ -177,13 +200,13 @@ function ProyekPage() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="scroll-mt-24">
         <CardContent>
           <WeekSheet sim={view} />
         </CardContent>
       </Card>
 
-      <Card>
+      <Card id="laba" className="scroll-mt-24">
         <CardContent>
           <IncomeStatementTable
             income={sim.income}

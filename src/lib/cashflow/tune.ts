@@ -1,6 +1,6 @@
-import { simulate, applyStartPreset } from "./engine";
-import { DEFAULT_COMPANY, satuPasarProjects, berbagaiPasarProjects } from "./scenarios";
-import type { StartPreset } from "./types";
+import { simulate, applyStartPreset } from "./engine.ts";
+import { DEFAULT_COMPANY, satuPasarProjects, berbagaiPasarProjects } from "./scenarios.ts";
+import type { StartPreset } from "./types.ts";
 
 const presets: StartPreset[] = ["bersamaan", "bergelombang", "numpuk-q4"];
 

@@ -37,7 +37,7 @@ const TERMS: { group: string; items: { name: string; about: string }[] }[] = [
       { name: "A", about: "Biaya langsung — upah, bahan, alat. Porsi slider berlaku di sini." },
       { name: "B", about: "Biaya tidak langsung — overhead, tidak dipecah porsi." },
       { name: "C", about: "Biaya total (A + B). Beban pokok di laba rugi." },
-      { name: "D", about: "Keuntungan 10% × C, sebelum pajak." },
+      { name: "D", about: "Keuntungan (default 10% × C, bisa digeser di Keuangan), sebelum pajak." },
       { name: "E", about: "Biaya total & keuntungan (C + D). DPP, pendapatan." },
       { name: "F", about: "PPN 11% × E. Bukan beban laba rugi." },
       { name: "G", about: "Nilai kontrak (E + F). Kas kotor ke owner." },

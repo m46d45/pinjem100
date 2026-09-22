@@ -3,11 +3,20 @@ import type { Project } from "@/lib/cashflow/types";
 import { formatRp } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
-export function RabTable({ project, ppnRate }: { project: Project; ppnRate: number }) {
-  const roll = rabRollup(project, ppnRate);
+export function RabTable({
+  project,
+  ppnRate,
+  profitRate = 0.1,
+}: {
+  project: Project;
+  ppnRate: number;
+  profitRate?: number;
+}) {
+  const roll = rabRollup(project, ppnRate, profitRate);
   const langsung = project.rab.filter((i) => rabKind(i) === "langsung");
   const tidak = project.rab.filter((i) => rabKind(i) === "tidak-langsung");
   const pct = Math.round(ppnRate * 100);
+  const profitPct = Math.round(roll.profitRate * 100);
 
   return (
     <div className="flex flex-col gap-3">
@@ -50,9 +59,9 @@ export function RabTable({ project, ppnRate }: { project: Project; ppnRate: numb
             tone
           />
           <SumRow
-            label="D. Keuntungan 10%"
+            label={`D. Keuntungan ${profitPct}%`}
             amount={roll.keuntungan}
-            hint="10% × C, sebelum PPN"
+            hint={`${profitPct}% × C, sebelum PPN`}
           />
           <SumRow
             label="E. Biaya total & keuntungan (C + D)"

@@ -4,8 +4,8 @@ import {
   type Company,
   type PaymentTerms,
   type Project,
-} from "./types";
-import { applyStartPreset } from "./engine";
+} from "./types.ts";
+import { applyStartPreset, syncContractValue } from "./engine.ts";
 
 const TERMS_RUMAH: PaymentTerms = {
   umPercent: 0.15,
@@ -82,34 +82,36 @@ function house(
 }
 
 export function satuPasarProjects(): Project[] {
-  return applyStartPreset(
-    [
-      house(
-        "sari",
-        "Rumah 2 Lantai — Cileunyi",
-        "Owner — Cileunyi",
-        880_000_000,
-        0.95,
-        "Rumah tinggal 2 lantai.",
-      ),
-      house(
-        "andi",
-        "Rumah Type 70 — Cimahi",
-        "Owner — Cimahi",
-        720_000_000,
-        0.78,
-        "Rumah type 70.",
-      ),
-      house(
-        "lina",
-        "Renovasi Rumah — Lembang",
-        "Owner — Lembang",
-        510_000_000,
-        0.55,
-        "Renovasi total.",
-      ),
-    ],
-    "bersamaan",
+  return withSyncedContract(
+    applyStartPreset(
+      [
+        house(
+          "sari",
+          "Rumah 2 Lantai — Cileunyi",
+          "Owner — Cileunyi",
+          880_000_000,
+          0.95,
+          "Rumah tinggal 2 lantai.",
+        ),
+        house(
+          "andi",
+          "Rumah Type 70 — Cimahi",
+          "Owner — Cimahi",
+          720_000_000,
+          0.78,
+          "Rumah type 70.",
+        ),
+        house(
+          "lina",
+          "Renovasi Rumah — Lembang",
+          "Owner — Lembang",
+          510_000_000,
+          0.55,
+          "Renovasi total.",
+        ),
+      ],
+      "bersamaan",
+    ),
   );
 }
 
@@ -181,7 +183,7 @@ export function berbagaiPasarProjects(): Project[] {
     ],
   };
 
-  return applyStartPreset([drainase, rumah, subkon], "bersamaan");
+  return withSyncedContract(applyStartPreset([drainase, rumah, subkon], "bersamaan"));
 }
 
 export const DEFAULT_COMPANY: Company = {
@@ -194,6 +196,7 @@ export const DEFAULT_COMPANY: Company = {
   horizonWeeks: 60,
   ppnRate: 0.11,
   pphRate: 0.0175,
+  profitRate: 0.1,
   lender: "bank",
   disbursementLagWeeks: 0,
   debtScheme: "revolving",
@@ -208,3 +211,7 @@ export const DEFAULT_COMPANY: Company = {
   parkShare: 1,
   parkLagWeeks: 0,
 };
+
+function withSyncedContract(projects: Project[]): Project[] {
+  return projects.map((p) => syncContractValue(p, DEFAULT_COMPANY));
+}

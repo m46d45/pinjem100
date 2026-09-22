@@ -1,4 +1,4 @@
-import { weekLabel } from "../format";
+import { weekLabel } from "../format.ts";
 import {
   DEFAULT_COST_MIX,
   DEFAULT_PAY_POLICY,
@@ -14,7 +14,7 @@ import {
   type Simulation,
   type WeekPoint,
   type Zone,
-} from "./types";
+} from "./types.ts";
 
 function clamp(n: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, n));
@@ -77,7 +77,18 @@ export function rabKind(item: { name: string; kind?: "langsung" | "tidak-langsun
 
 export const PROFIT_RATE = 0.1;
 
-export function rabRollup(project: Project, ppnRate: number) {
+export function profitRateOf(company?: Pick<Company, "profitRate"> | null): number {
+  const rate = company?.profitRate;
+  if (typeof rate === "number" && Number.isFinite(rate)) return clamp(rate, 0, 0.4);
+  return PROFIT_RATE;
+}
+
+export function rabRollup(
+  project: Project,
+  ppnRate: number,
+  profitRate: number = PROFIT_RATE,
+) {
+  const rate = clamp(profitRate, 0, 0.4);
   let langsung = 0;
   let overhead = 0;
   for (const item of project.rab) {
@@ -85,7 +96,7 @@ export function rabRollup(project: Project, ppnRate: number) {
     else langsung += item.amount;
   }
   const pokok = langsung + overhead;
-  const keuntungan = pokok * PROFIT_RATE;
+  const keuntungan = pokok * rate;
   const total = pokok + keuntungan;
   const ppn = total * ppnRate;
   const kontrak = total + ppn;
@@ -99,8 +110,18 @@ export function rabRollup(project: Project, ppnRate: number) {
     ppn,
     kontrak,
     ppnRate,
-    profitRate: PROFIT_RATE,
+    profitRate: rate,
   };
+}
+
+/** Keep Project.contractValue equal to RAB G for the given tax/profit rates. */
+export function syncContractValue(
+  project: Project,
+  company: Pick<Company, "ppnRate" | "profitRate">,
+): Project {
+  const kontrak = rabRollup(project, company.ppnRate, profitRateOf(company)).kontrak;
+  if (project.contractValue === kontrak) return project;
+  return { ...project, contractValue: kontrak };
 }
 
 export function costMixOf(project: Project): CostMix {
@@ -259,7 +280,7 @@ function projectFlows(project: Project, company: Company, horizon: number): Proj
   const start = project.startWeek;
   const duration = projectDuration(project);
   const shares = workShares(project);
-  const roll = rabRollup(project, company.ppnRate);
+  const roll = rabRollup(project, company.ppnRate, profitRateOf(company));
   const costA = roll.langsung;
   const costB = roll.overhead;
   const terms = project.terms;
@@ -672,7 +693,7 @@ export function simulate(company: Company, projects: Project[]): Simulation {
     const cost = directCost(p);
     const duration = projectDuration(p);
     const flow = projectFlows(p, company, horizon);
-    const roll = rabRollup(p, company.ppnRate);
+    const roll = rabRollup(p, company.ppnRate, profitRateOf(company));
     const dpp = roll.total;
     const totalIn = flow.inflow.reduce((a, b) => a + b, 0);
     const totalOut = flow.outflow.reduce((a, b) => a + b, 0);

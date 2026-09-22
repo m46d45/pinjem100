@@ -1,6 +1,14 @@
 import type { Simulation } from "./cashflow/types";
 
-type Cell = string | number | null;
+type CellValue = string | number | null;
+
+type RichCell = {
+  value: CellValue;
+  /** SpreadsheetML formula, e.g. "=RC[-2]-RC[-1]" or "=R[-1]C+RC[-1]". */
+  formula?: string;
+};
+
+type Cell = CellValue | RichCell;
 
 function esc(s: string): string {
   return s
@@ -10,17 +18,26 @@ function esc(s: string): string {
     .replace(/"/g, "\u0026quot;");
 }
 
-function cell(value: Cell): string {
-  if (value === null || value === "") return "<Cell/>";
+function normalize(cell: Cell): RichCell {
+  if (cell !== null && typeof cell === "object" && "value" in cell) return cell;
+  return { value: cell };
+}
+
+function cellXml(raw: Cell): string {
+  const { value, formula } = normalize(raw);
+  const formulaAttr = formula ? ` ss:Formula="${esc(formula)}"` : "";
+  if (value === null || value === "") {
+    return formula ? `<Cell${formulaAttr}/>` : "<Cell/>";
+  }
   if (typeof value === "number") {
     if (!Number.isFinite(value)) return "<Cell/>";
-    return `<Cell ss:StyleID="n"><Data ss:Type="Number">${value}</Data></Cell>`;
+    return `<Cell ss:StyleID="n"${formulaAttr}><Data ss:Type="Number">${value}</Data></Cell>`;
   }
-  return `<Cell><Data ss:Type="String">${esc(value)}</Data></Cell>`;
+  return `<Cell${formulaAttr}><Data ss:Type="String">${esc(value)}</Data></Cell>`;
 }
 
 function row(values: Cell[]): string {
-  return `<Row>${values.map(cell).join("")}</Row>`;
+  return `<Row>${values.map(cellXml).join("")}</Row>`;
 }
 
 function sheet(name: string, rows: Cell[][]): string {
@@ -30,6 +47,10 @@ function sheet(name: string, rows: Cell[][]): string {
 
 function roundRp(n: number): number {
   return Math.round(n);
+}
+
+function num(value: number, formula?: string): RichCell {
+  return formula ? { value: roundRp(value), formula } : { value: roundRp(value) };
 }
 
 export function downloadSimExcel(sim: Simulation, filename: string): void {
@@ -112,55 +133,62 @@ function weekSheet(sim: Simulation): Cell[][] {
     "PPN masukan",
     "PPN disetor",
   ];
-  const body = sim.weeks.map((w) => [
-    w.week + 1,
-    w.label,
-    Math.round(w.workProgress * 1000) / 10,
-    roundRp(w.revenue),
-    roundRp(w.expense),
-    roundRp(w.cashIn),
-    roundRp(w.cashOut),
-    roundRp(w.net),
-    roundRp(w.accumulatedFromZero),
-    roundRp(w.draw),
-    roundRp(w.repay),
-    roundRp(w.cash),
-    roundRp(w.loan),
-    roundRp(w.reserve),
-    roundRp(w.park),
-    roundRp(w.liquidate),
-    roundRp(w.interest),
-    roundRp(w.otherIncome),
-    roundRp(w.laborOut),
-    roundRp(w.materialOut),
-    roundRp(w.otherOut),
-    roundRp(w.pph),
-    roundRp(w.ppnKeluaran),
-    roundRp(w.ppnMasukan),
-    roundRp(w.ppnRemit),
-  ]);
+  const body = sim.weeks.map((w, i) => {
+    const excelRow = i + 2; // 1-based, row 1 is header
+    return [
+      w.week + 1,
+      w.label,
+      Math.round(w.workProgress * 1000) / 10,
+      roundRp(w.revenue),
+      roundRp(w.expense),
+      roundRp(w.cashIn),
+      roundRp(w.cashOut),
+      // Net = Receipt - Disbursement (cols F - G)
+      num(w.net, "=RC[-2]-RC[-1]"),
+      // Kumulatif: first row = Net; later = prior kumulatif + Net
+      i === 0
+        ? num(w.accumulatedFromZero, "=RC[-1]")
+        : num(w.accumulatedFromZero, `=R${excelRow - 1}C+RC[-1]`),
+      roundRp(w.draw),
+      roundRp(w.repay),
+      roundRp(w.cash),
+      roundRp(w.loan),
+      roundRp(w.reserve),
+      roundRp(w.park),
+      roundRp(w.liquidate),
+      roundRp(w.interest),
+      roundRp(w.otherIncome),
+      roundRp(w.laborOut),
+      roundRp(w.materialOut),
+      roundRp(w.otherOut),
+      roundRp(w.pph),
+      roundRp(w.ppnKeluaran),
+      roundRp(w.ppnMasukan),
+      roundRp(w.ppnRemit),
+    ];
+  });
   return [head, ...body];
 }
 
 function incomeSheet(sim: Simulation): Cell[][] {
   const i = sim.income;
   return [
-    ["Pos", "Nilai"],
-    ["Revenue (Pendapatan / DPP)", roundRp(i.revenue)],
-    ["Cost of sales (Beban pokok)", roundRp(i.cogs)],
-    ["Gross profit (Laba kotor)", roundRp(i.grossProfit)],
-    ["Other income (Hasil cadangan)", roundRp(i.otherIncome)],
-    ["EBIT (Laba usaha)", roundRp(i.ebit)],
-    ["Interest (Beban bunga)", roundRp(i.interest)],
-    ["EBT (Laba sebelum pajak)", roundRp(i.ebt)],
-    ["PPh Final 4(2)", roundRp(i.taxPph)],
-    ["Net profit (Laba bersih)", roundRp(i.netProfit)],
-    ["PPN keluaran", roundRp(i.ppnKeluaran)],
-    ["PPN masukan", roundRp(i.ppnMasukan)],
-    ["PPN net", roundRp(i.ppnNet)],
-    ["DER", Math.round(sim.ratios.der * 1000) / 1000],
-    ["Debt ratio", Math.round(sim.ratios.debtRatio * 10000) / 10000],
-    ["ROE", Math.round(sim.ratios.roe * 10000) / 10000],
+    ["Pos", "Nilai", "Rumus"],
+    ["Revenue (Pendapatan / DPP)", roundRp(i.revenue), "RAB E total"],
+    ["Cost of sales (Beban pokok)", roundRp(i.cogs), "RAB C total"],
+    ["Gross profit (Laba kotor)", num(i.grossProfit, "=R[-2]C-R[-1]C"), "Revenue − COGS"],
+    ["Other income (Hasil cadangan)", roundRp(i.otherIncome), ""],
+    ["EBIT (Laba usaha)", num(i.ebit, "=R[-2]C+R[-1]C"), "Gross + other"],
+    ["Interest (Beban bunga)", roundRp(i.interest), ""],
+    ["EBT (Laba sebelum pajak)", num(i.ebt, "=R[-2]C-R[-1]C"), "EBIT − interest"],
+    ["PPh Final 4(2)", roundRp(i.taxPph), ""],
+    ["Net profit (Laba bersih)", num(i.netProfit, "=R[-2]C-R[-1]C"), "EBT − PPh"],
+    ["PPN keluaran", roundRp(i.ppnKeluaran), ""],
+    ["PPN masukan", roundRp(i.ppnMasukan), ""],
+    ["PPN net", num(i.ppnNet, "=MAX(0,R[-2]C-R[-1]C)"), "max(0, keluaran − masukan)"],
+    ["DER", Math.round(sim.ratios.der * 1000) / 1000, "Utang puncak ÷ ekuitas"],
+    ["Debt ratio", Math.round(sim.ratios.debtRatio * 10000) / 10000, ""],
+    ["ROE", Math.round(sim.ratios.roe * 10000) / 10000, "NI ÷ ekuitas"],
   ];
 }
 
@@ -168,9 +196,9 @@ function projectSheet(sim: Simulation): Cell[][] {
   const head: Cell[] = [
     "Proyek",
     "Pasar",
-    "Kontrak",
-    "DPP",
-    "Cost of sales",
+    "Kontrak (G)",
+    "DPP (E)",
+    "Cost of sales (C)",
     "Earning",
     "Expense",
     "Laba",
@@ -185,10 +213,12 @@ function projectSheet(sim: Simulation): Cell[][] {
     roundRp(p.directCost),
     roundRp(p.totalEarning),
     roundRp(p.totalExpense),
-    roundRp(p.laba),
-    roundRp(p.kas),
+    num(p.laba, "=RC[-2]-RC[-1]"),
+    num(p.kas, undefined),
     p.durationWeeks,
   ]);
+  // Kas is totalIn - totalOut; we don't have those columns — keep cached value.
+  // Laba formula uses earning - expense columns.
   return [head, ...body];
 }
 
@@ -205,4 +235,13 @@ function reserveSheet(sim: Simulation): Cell[][] {
       roundRp(w.otherIncome),
     ]);
   return [head, ...body];
+}
+
+/** Exported for unit tests. */
+export function buildWeekSheetXml(sim: Simulation): string {
+  return sheet("Minggu", weekSheet(sim));
+}
+
+export function buildIncomeSheetXml(sim: Simulation): string {
+  return sheet("Laba rugi", incomeSheet(sim));
 }

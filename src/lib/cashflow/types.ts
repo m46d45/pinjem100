@@ -88,6 +88,8 @@ export type Company = {
   horizonWeeks: number;
   ppnRate: number;
   pphRate: number;
+  /** Markup on RAB C before PPN (default 10%). */
+  profitRate: number;
   lender: Lender;
   disbursementLagWeeks: number;
   debtScheme: DebtScheme;
