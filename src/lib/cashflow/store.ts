@@ -270,6 +270,8 @@ export const usePinjem = create<PinjemState & PinjemActions>()(
       resetLesson: () => set(initial()),
     }),
     {
+      // skipHydration: StoreProvider calls rehydrate(); StatsBeacon must wait
+      // for hasHydrated() so journal bumps do not overwrite saved student state.
       name: "pinjem100-v2",
       version: PINJEM_STORE_VERSION,
       skipHydration: true,
