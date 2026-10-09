@@ -8,9 +8,11 @@ import { StatsBeacon } from "@/components/layout/stats-beacon";
  * Persist uses skipHydration; rehydrate runs here. StatsBeacon must not mount
  * (and must not write) until hasHydrated is true — otherwise its child effects
  * persist the default satu-pasar state over the student's saved data.
+ *
+ * Start hydrated=false so SSR never touches persist APIs; client effect only.
  */
 export function StoreProvider({ children }: { children: ReactNode }) {
-  const [hydrated, setHydrated] = useState(() => usePinjem.persist.hasHydrated());
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     const unsub = usePinjem.persist.onFinishHydration(() => {
