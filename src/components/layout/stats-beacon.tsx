@@ -3,6 +3,10 @@ import { useEffect, useRef } from "react";
 import { usePinjem, useSimulation } from "@/lib/cashflow/store";
 import { recordLabEvent } from "@/lib/stats";
 
+function persistReady(): boolean {
+  return usePinjem.persist.hasHydrated();
+}
+
 export function StatsBeacon() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const mode = usePinjem((s) => s.mode);
@@ -15,6 +19,8 @@ export function StatsBeacon() {
   const lastKey = useRef("");
 
   useEffect(() => {
+    // Never write journal/views before rehydrate finishes.
+    if (!persistReady()) return;
     bumpView();
     void recordLabEvent({ data: { kind: "view", path: pathname } }).catch(() => undefined);
     if (pathname === "/proyek") markJournal({ openedProyek: true });
@@ -23,6 +29,7 @@ export function StatsBeacon() {
   }, [pathname, markJournal, bumpView]);
 
   useEffect(() => {
+    if (!persistReady()) return;
     const key = `${mode}:${preset}:${sim.zone}:${Math.round(sim.peakLoan)}`;
     if (first.current) {
       first.current = false;

@@ -1,12 +1,29 @@
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { usePinjem } from "@/lib/cashflow/store";
 import { AppShell } from "@/components/layout/app-shell";
 import { StatsBeacon } from "@/components/layout/stats-beacon";
 
+/**
+ * Persist uses skipHydration; rehydrate runs here. StatsBeacon must not mount
+ * (and must not write) until hasHydrated is true — otherwise its child effects
+ * persist the default satu-pasar state over the student's saved data.
+ *
+ * Start hydrated=false so SSR never touches persist APIs; client effect only.
+ */
 export function StoreProvider({ children }: { children: ReactNode }) {
+  const [hydrated, setHydrated] = useState(false);
+
   useEffect(() => {
-    void usePinjem.persist.rehydrate();
+    const unsub = usePinjem.persist.onFinishHydration(() => {
+      setHydrated(true);
+    });
+    if (usePinjem.persist.hasHydrated()) {
+      setHydrated(true);
+    } else {
+      void usePinjem.persist.rehydrate();
+    }
+    return unsub;
   }, []);
 
   useEffect(() => {
@@ -21,7 +38,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   return (
     <TooltipProvider delayDuration={200}>
       <AppShell>
-        <StatsBeacon />
+        {hydrated ? <StatsBeacon /> : null}
         {children}
       </AppShell>
     </TooltipProvider>
